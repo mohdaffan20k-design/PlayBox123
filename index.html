@@ -34,6 +34,15 @@ header{height:76px;background:var(--surface);border-bottom:1px solid var(--borde
 @media(max-width:750px){.quickstats{grid-template-columns:repeat(2,1fr)}.profilegrid{grid-template-columns:1fr}.notifmenu{right:-50px;width:270px}.gameactions{flex-wrap:wrap}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+ <script>
+const SUPABASE_URL = "https://jvwcgznpsvefcvaiaehz.supabase.co";
+const SUPABASE_KEY = "sb_publishable_6pofW0-Vx-yyQgB7zRQCjA_U4y-Qbx6";
+
+const supabaseClient = supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+</script>
 </head>
 <body>
 <div id="app">
