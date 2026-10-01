@@ -244,7 +244,65 @@ function currentEmail(){let saved=localStorage.getItem('playboxUserEmail');if(sa
 function openAuth(mode){authMode=mode;el('authTitle').textContent=mode==='signup'?'Create your account':'Log In';el('authSubtitle').textContent=mode==='signup'?'Sign up with your Gmail to save your games and continue playing.':'Log in to continue playing and save your games.';el('authSubmit').textContent=mode==='signup'?'Sign Up':'Log In';el('authPassword').autocomplete=mode==='signup'?'new-password':'current-password';el('authError').textContent='';el('authEmail').value='';el('authPassword').value='';el('authModal').classList.add('open');setTimeout(()=>el('authEmail').focus(),50)}
 function closeAuth(){el('authModal').classList.remove('open');el('authForm').reset();el('authError').textContent=''}
 function authKey(email){return 'playboxAccount_'+email.toLowerCase()}
-el('authForm').onsubmit=e=>{e.preventDefault();let email=el('authEmail').value.trim().toLowerCase(),password=el('authPassword').value;if(!email.endsWith('@gmail.com')){el('authError').textContent='Please use a Gmail address.';return}if(password.length<6){el('authError').textContent='Password must be at least 6 characters.';return}let key=authKey(email),existing=localStorage.getItem(key);if(authMode==='signup'){if(existing){el('authError').textContent='An account with this Gmail already exists. Log in instead.';return}localStorage.setItem(key,JSON.stringify({email,password}));currentUser=email.split('@')[0].slice(0,24);localStorage.setItem('playboxUser',currentUser);closeAuth();updateAuth();renderContinue()}else{if(!existing){el('authError').textContent='No account found. Please sign up first.';return}let account=JSON.parse(existing);if(account.password!==password){el('authError').textContent='Incorrect password.';return}currentUser=account.email.split('@')[0].slice(0,24);localStorage.setItem('playboxUser',currentUser);closeAuth();updateAuth();renderContinue()}}
+el('authForm').onsubmit = async e => {
+  e.preventDefault();
+
+  const email = el('authEmail').value.trim().toLowerCase();
+  const password = el('authPassword').value;
+
+  if (!email.endsWith('@gmail.com')) {
+    el('authError').textContent = 'Please use a Gmail address.';
+    return;
+  }
+
+  if (password.length < 6) {
+    el('authError').textContent = 'Password must be at least 6 characters.';
+    return;
+  }
+
+  el('authError').textContent = '';
+  el('authSubmit').disabled = true;
+
+  try {
+    if (authMode === 'signup') {
+      const { data, error } = await supabaseClient.auth.signUp({
+        email,
+        password
+      });
+
+      if (error) throw error;
+
+      if (!data.session) {
+        el('authError').textContent =
+          'Account created! Check your Gmail to confirm your email.';
+      } else {
+        currentUser = email.split('@')[0].slice(0, 24);
+        closeAuth();
+        updateAuth();
+        renderContinue();
+      }
+
+    } else {
+      const { data, error } =
+        await supabaseClient.auth.signInWithPassword({
+          email,
+          password
+        });
+
+      if (error) throw error;
+
+      currentUser = email.split('@')[0].slice(0, 24);
+      closeAuth();
+      updateAuth();
+      renderContinue();
+    }
+
+  } catch (error) {
+    el('authError').textContent = error.message;
+  }
+
+  el('authSubmit').disabled = false;
+};
 el('authCancel').onclick=closeAuth;el('authModal').onclick=e=>{if(e.target===el('authModal'))closeAuth()};document.addEventListener('keydown',e=>{if(e.key==='Escape'&&el('authModal').classList.contains('open'))closeAuth()});
 function openSettings(){let email=currentEmail(),avatar=localStorage.getItem('playboxAvatar_'+email)||'';el('profileEmail').textContent=email;el('profileBig').innerHTML=avatar?`<img src="${avatar}" alt="Profile" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`:'👤';el('settingsModal').classList.add('open')}
 function closeSettings(){el('settingsModal').classList.remove('open')}
