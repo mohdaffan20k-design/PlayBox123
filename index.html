@@ -496,7 +496,70 @@ function openSettings(){let email=currentEmail(),avatar=localStorage.getItem('pl
 function closeSettings(){el('settingsModal').classList.remove('open')}
 el('settingsClose').onclick=closeSettings;el('settingsModal').onclick=e=>{if(e.target===el('settingsModal'))closeSettings()};el('changePic').onclick=()=>el('picInput').click();el('picInput').onchange=e=>{let file=e.target.files[0];if(!file)return;let reader=new FileReader();reader.onload=()=>{localStorage.setItem('playboxAvatar_'+currentEmail(),reader.result);openSettings();updateAuth()};reader.readAsDataURL(file)};
 function saveAccount(email,account){localStorage.setItem(authKey(email),JSON.stringify(account))}
-el('changePassword').onclick=()=>{let email=currentEmail(),account=JSON.parse(localStorage.getItem(authKey(email))||'null');if(!account)return;let old=prompt('Enter your current password:');if(old===null)return;if(old!==account.password){alert('Incorrect current password.');return}let next=prompt('Enter your new password (6+ characters):');if(next===null)return;if(next.length<6){alert('Password must be at least 6 characters.');return}account.password=next;saveAccount(email,account);alert('Password changed successfully.')};el('resetPassword').onclick=()=>{let email=currentEmail(),account=JSON.parse(localStorage.getItem(authKey(email))||'null');if(!account)return;let next=prompt('Enter your new password (6+ characters):');if(next===null)return;if(next.length<6){alert('Password must be at least 6 characters.');return}account.password=next;saveAccount(email,account);alert('Password reset successfully.')};el('changeEmail').onclick=()=>{let oldEmail=currentEmail(),account=JSON.parse(localStorage.getItem(authKey(oldEmail))||'null');if(!account)return;let nextEmail=prompt('Enter your new Gmail address:');if(nextEmail===null)return;nextEmail=nextEmail.trim().toLowerCase();if(!nextEmail.endsWith('@gmail.com')){alert('Please use a Gmail address.');return}if(localStorage.getItem(authKey(nextEmail))){alert('That Gmail already has an account.');return}localStorage.removeItem(authKey(oldEmail));account.email=nextEmail;saveAccount(nextEmail,account);let played=localStorage.getItem('playboxPlayed_'+oldEmail);if(played){localStorage.setItem('playboxPlayed_'+nextEmail,played);localStorage.removeItem('playboxPlayed_'+oldEmail)}let avatar=localStorage.getItem('playboxAvatar_'+oldEmail);if(avatar){localStorage.setItem('playboxAvatar_'+nextEmail,avatar);localStorage.removeItem('playboxAvatar_'+oldEmail)}currentUser=nextEmail.split('@')[0].slice(0,24);localStorage.setItem('playboxUser',currentUser);localStorage.setItem('playboxUserEmail',nextEmail);openSettings();updateAuth();renderContinue();alert('Email changed successfully.')};el('deleteAccount').onclick=()=>{let email=currentEmail();if(!confirm('Delete this PLAYBOX account permanently?'))return;localStorage.removeItem(authKey(email));localStorage.removeItem('playboxPlayed_'+email);localStorage.removeItem('playboxAvatar_'+email);localStorage.removeItem('playboxUser');localStorage.removeItem('playboxUserEmail');currentUser='';closeSettings();updateAuth();renderContinue();alert('Account deleted.')};document.addEventListener('click',e=>{let wrap=document.querySelector('.profile-wrap');if(wrap&&!wrap.contains(e.target)){let menu=el('profileMenu');if(menu)menu.classList.remove('open')}});
+el('changePassword').onclick=()=>{let email=currentEmail(),account=JSON.parse(localStorage.getItem(authKey(email))||'null');if(!account)return;let old=prompt('Enter your current password:');if(old===null)return;if(old!==account.password){alert('Incorrect current password.');return}let next=prompt('Enter your new password (6+ characters):');if(next===null)return;if(next.length<6){alert('Password must be at least 6 characters.');return}account.password=next;saveAccount(email,account);alert('Password changed successfully.')};el('resetPassword').onclick=()=>{let email=currentEmail(),account=JSON.parse(localStorage.getItem(authKey(email))||'null');if(!account)return;let next=prompt('Enter your new password (6+ characters):');if(next===null)return;if(next.length<6){alert('Password must be at least 6 characters.');return}account.password=next;saveAccount(email,account);alert('Password reset successfully.')};el('changeEmail').onclick=()=>{let oldEmail=currentEmail(),account=JSON.parse(localStorage.getItem(authKey(oldEmail))||'null');if(!account)return;let nextEmail=prompt('Enter your new Gmail address:');if(nextEmail===null)return;nextEmail=nextEmail.trim().toLowerCase();if(!nextEmail.endsWith('@gmail.com')){alert('Please use a Gmail address.');return}if(localStorage.getItem(authKey(nextEmail))){alert('That Gmail already has an account.');return}localStorage.removeItem(authKey(oldEmail));account.email=nextEmail;saveAccount(nextEmail,account);let played=localStorage.getItem('playboxPlayed_'+oldEmail);if(played){localStorage.setItem('playboxPlayed_'+nextEmail,played);localStorage.removeItem('playboxPlayed_'+oldEmail)}let avatar=localStorage.getItem('playboxAvatar_'+oldEmail);if(avatar){localStorage.setItem('playboxAvatar_'+nextEmail,avatar);localStorage.removeItem('playboxAvatar_'+oldEmail)}currentUser=nextEmail.split('@')[0].slice(0,24);localStorage.setItem('playboxUser',currentUser);localStorage.setItem('playboxUserEmail',nextEmail);openSettings();updateAuth();renderContinue();alert('Email changed successfully.')};el('deleteAccount').onclick=async ()=>{
+  const email=currentEmail();
+  if(!confirm('Delete this PLAYBOX account permanently? This will erase your profile, favorites, playtime, achievements, and account login. You can create a new account with the same Gmail afterward.'))return;
+
+  const {data:sessionData,error:sessionError}=await supabaseClient.auth.getSession();
+  const session=sessionData?.session;
+
+  if(sessionError||!session){
+    alert('Please log in again before deleting your account.');
+    return;
+  }
+
+  const btn=el('deleteAccount');
+  btn.disabled=true;
+  btn.textContent='Deleting...';
+
+  try{
+    const response=await fetch(SUPABASE_URL+'/functions/v1/delete-account',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'Authorization':'Bearer '+session.access_token,
+        'apikey':SUPABASE_KEY
+      }
+    });
+
+    const result=await response.json().catch(()=>({}));
+
+    if(!response.ok||result.error){
+      throw new Error(result.error||'Account deletion failed.');
+    }
+
+    const keysToRemove=[
+      'playboxUser',
+      'playboxUserEmail',
+      'playboxFavorites_'+currentUser,
+      'playboxPlayed_'+currentUser,
+      'playboxPlayTime_'+currentUser,
+      'playboxRequests_'+currentUser,
+      'playboxFriends_'+currentUser,
+      'playboxSeenAchievements_'+currentUser,
+      'playboxAvatar_'+email
+    ];
+
+    keysToRemove.forEach(k=>localStorage.removeItem(k));
+    localStorage.removeItem('playboxPendingUsername_'+email);
+
+    await supabaseClient.auth.signOut();
+    currentUser='';
+    favoritesCache=[];
+    closeSettings();
+    updateAuth();
+    renderContinue();
+    renderFavorites();
+    render();
+    alert('Account deleted permanently. You can now create a new account with the same Gmail.');
+  }catch(err){
+    console.error('Account deletion error:',err);
+    alert(err.message||'Could not delete the account. Make sure the Supabase delete-account function is deployed.');
+  }finally{
+    btn.disabled=false;
+    btn.textContent='Delete';
+  }
+};document.addEventListener('click',e=>{let wrap=document.querySelector('.profile-wrap');if(wrap&&!wrap.contains(e.target)){let menu=el('profileMenu');if(menu)menu.classList.remove('open')}});
 function openGame(name){let g=games.find(x=>x.name===name);if(!g)return;trackGameTime();activeGame=currentUser?g.name:'';gameStartedAt=currentUser?Date.now():0;activeGameData=g;el('modalTitle').textContent=g.name;el('modalEmoji').textContent=g.emoji;el('modalMeta').textContent=g.meta;el('modalDesc').textContent=`${g.name} • ${g.meta}. PLAYBOX opens the official game when embedding is supported.`;el('modalText').textContent=currentUser?`${g.name} — saved to Continue Playing and your stats.`:`${g.name} — loading the official game`;el('gameFrame').src=g.url;el('gameFrame').style.display='block';el('gameFallback').style.display='none';el('launch').textContent='Open official site';el('modal').classList.add('open');savePlayed(g.name);updateFriendActivity();updateModalFavorite();el('launch').onclick=()=>window.open(g.url,'_blank','noopener,noreferrer');el('modalNewTab').onclick=()=>window.open(g.url,'_blank','noopener,noreferrer')}
 
 setInterval(()=>{if(document.getElementById('modal').classList.contains('open')){trackGameTime();renderContinue()}},30000);
