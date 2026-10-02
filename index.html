@@ -52,7 +52,7 @@ const supabaseClient = supabase.createClient(
 <main><section class="continue" id="continueSection"><div class="section-title"><h2>▶ Continue Playing</h2><span class="count">Your recent games</span></div><div class="continue-grid" id="continueGames"></div></section><section class="favsection" id="favSection"><div class="section-title"><h2>❤️ Your Favorites</h2><span class="count">Saved games</span></div><div class="fav-grid" id="favGames"></div></section><div class="section-title"><h2>Featured games</h2><span class="count" id="count"></span></div><div class="featured" id="featured"></div><div class="section-title"><h2>All games</h2></div><div class="grid" id="games"></div></main>
 </div>
 <div class="modal" id="modal"><div class="modalbox"><div class="gamearea"><iframe id="gameFrame" title="PLAYBOX game" style="width:100%;height:100%;border:0;background:#fff;display:block" allow="fullscreen; autoplay; gamepad; clipboard-write" allowfullscreen></iframe><div id="gameFallback" style="position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:#101014;color:#fff;text-align:center;padding:30px"><div><div class="emoji" id="modalEmoji">🎮</div><h2 id="modalTitle">Game</h2><p id="modalText">Loading the official game...</p><button id="launch" style="background:var(--accent);border:0;color:#fff;font-weight:900;border-radius:10px;padding:12px 20px;cursor:pointer">Open official site</button></div></div></div><div class="modalinfo"><div><strong id="modalMeta">Multiplayer</strong><div class="modaldesc" id="modalDesc">PLAYBOX loads the game's official website inside the player when the site allows embedding.</div></div><div class="gameactions"><button class="heartlarge" id="modalFav">♡ Favorite</button><button class="iconbtn" id="modalNewTab">↗ New Tab</button><button class="close" id="close">Close</button></div></div></div></div>
-<div class="authmodal" id="authModal"><div class="authbox"><h2 id="authTitle">Log In</h2><p id="authSubtitle">Log in to continue playing and save your games.</p><form id="authForm"><label for="authEmail">Gmail</label><input id="authEmail" type="email" placeholder="you@gmail.com" autocomplete="email" required><label for="authPassword">Password</label><input id="authPassword" type="password" placeholder="Enter your password" autocomplete="current-password" required><div class="autherror" id="authError"></div><div class="authactions"><button type="button" class="authcancel" id="authCancel">Cancel</button><button type="submit" class="authsubmit" id="authSubmit">Log In</button></div></form></div></div>
+<div class="authmodal" id="authModal"><div class="authbox"><h2 id="authTitle">Log In</h2><p id="authSubtitle">Log in to continue playing and save your games.</p><form id="authForm"><label for="authUsername" id="authUsernameLabel" style="display:none">Username</label><input id="authUsername" type="text" placeholder="Choose a username" autocomplete="username" style="display:none"><label for="authEmail">Gmail</label><input id="authEmail" type="email" placeholder="you@gmail.com" autocomplete="email" required><label for="authPassword">Password</label><input id="authPassword" type="password" placeholder="Enter your password" autocomplete="current-password" required><div class="autherror" id="authError"></div><div class="authactions"><button type="button" class="authcancel" id="authCancel">Cancel</button><button type="submit" class="authsubmit" id="authSubmit">Log In</button></div></form></div></div>
 <div class="settingsmodal" id="settingsModal"><div class="settingsbox"><div class="settingshead"><div class="profile-big" id="profileBig">👤</div><div><h2>Profile & Settings</h2><p id="profileEmail"></p></div></div><div class="setting-row"><div><strong>Profile picture</strong><small>Choose a picture from your device.</small></div><button id="changePic">Change</button><input id="picInput" type="file" accept="image/*" hidden></div><div class="setting-row"><div><strong>Change password</strong><small>Update your current password.</small></div><button id="changePassword">Change</button></div><div class="setting-row"><div><strong>Reset password</strong><small>Set a new password for this account.</small></div><button id="resetPassword">Reset</button></div><div class="setting-row"><div><strong>Change email</strong><small>Move your account to another Gmail address.</small></div><button id="changeEmail">Change</button></div><div class="setting-row"><div><strong>Delete account</strong><small>This removes your saved account and played-game history.</small></div><button class="danger" id="deleteAccount">Delete</button></div><div class="settings-actions"><button id="settingsClose">Close</button></div></div></div>
 <div class="profilemodal" id="profileModal"><div class="profilebox"><div class="profilehero"><div class="profile-big" id="publicProfileAvatar">👤</div><div style="flex:1"><h2 id="publicProfileName">Player</h2><p id="publicProfileEmail"></p></div><button class="close" id="profileClose">Close</button></div><div class="quickstats"><div class="stat"><strong id="statPlayed">0</strong><small>Games played</small></div><div class="stat"><strong id="statTime">0m</strong><small>Total playtime</small></div><div class="stat"><strong id="statFavs">0</strong><small>Favorites</small></div><div class="stat"><strong id="statAch">0</strong><small>Achievements</small></div></div><div class="section-title"><h2>🏆 Achievements</h2></div><div class="profilegrid" id="achievementsGrid"></div></div></div><div class="socialmodal" id="socialModal"><div class="socialbox"><aside class="socialside"><h2>👤 Social</h2><button class="socialtab active" data-social="friends">Friends</button><button class="socialtab" data-social="requests">Requests</button><button class="socialtab" data-social="add">Add Friend</button><button class="socialtab" data-social="activity">Join / Activity</button><div id="friendMiniList" style="margin-top:18px"></div></aside><section class="socialmain"><div class="socialhead"><h2 id="socialTitle">Friends</h2><button class="close" id="socialClose">Close</button></div><div class="socialcontent" id="socialContent"></div></section></div></div>
 <div class="chatmodal" id="chatModal"><div class="chatbox"><div class="chathead"><div class="socialavatar" id="chatAvatar">👤</div><strong id="chatTitle">Chat</strong><button class="close" id="chatClose">Close</button></div><div class="chatmessages" id="chatMessages"></div><form class="chatinput" id="chatForm"><input id="chatInput" placeholder="Type a message..." autocomplete="off"><button>Send</button></form></div></div>
@@ -382,14 +382,34 @@ function updateAuth(){
   }
 }     
 function currentEmail(){let saved=localStorage.getItem('playboxUserEmail');if(saved)return saved;let keys=Object.keys(localStorage).filter(k=>k.startsWith('playboxAccount_'));let found=keys.find(k=>{try{return JSON.parse(localStorage.getItem(k)).email.split('@')[0].slice(0,24)===currentUser}catch(e){return false}});return found?found.replace('playboxAccount_',''):''}
-function openAuth(mode){authMode=mode;el('authTitle').textContent=mode==='signup'?'Create your account':'Log In';el('authSubtitle').textContent=mode==='signup'?'Sign up with your Gmail to save your games and continue playing.':'Log in to continue playing and save your games.';el('authSubmit').textContent=mode==='signup'?'Sign Up':'Log In';el('authPassword').autocomplete=mode==='signup'?'new-password':'current-password';el('authError').textContent='';el('authEmail').value='';el('authPassword').value='';el('authModal').classList.add('open');setTimeout(()=>el('authEmail').focus(),50)}
+function openAuth(mode){authMode=mode;let isSignup=mode==='signup';el('authTitle').textContent=isSignup?'Create your account':'Log In';el('authSubtitle').textContent=isSignup?'Create your PLAYBOX account with a username, Gmail, and password.':'Log in to continue playing and save your games.';el('authSubmit').textContent=isSignup?'Sign Up':'Log In';el('authPassword').autocomplete=isSignup?'new-password':'current-password';el('authUsernameLabel').style.display=isSignup?'block':'none';el('authUsername').style.display=isSignup?'block':'none';el('authUsername').required=isSignup;el('authUsername').value='';el('authError').textContent='';el('authEmail').value='';el('authPassword').value='';el('authModal').classList.add('open');setTimeout(()=>el(isSignup?'authUsername':'authEmail').focus(),50)}
 function closeAuth(){el('authModal').classList.remove('open');el('authForm').reset();el('authError').textContent=''}
 function authKey(email){return 'playboxAccount_'+email.toLowerCase()}
+async function getProfileForUser(userId){
+  const {data,error}=await supabaseClient.from('profiles').select('username,avatar_url').eq('id',userId).maybeSingle();
+  if(error){console.error('Profile load error:',error);return null}
+  return data;
+}
+async function ensureProfile(user,username){
+  if(!user)return null;
+  const existing=await getProfileForUser(user.id);
+  if(existing)return existing;
+  if(!username)return null;
+  const {data,error}=await supabaseClient.from('profiles').insert({id:user.id,username}).select('username,avatar_url').single();
+  if(error){console.error('Profile create error:',error);return null}
+  return data;
+}
 el('authForm').onsubmit = async e => {
   e.preventDefault();
 
+  const username = el('authUsername').value.trim();
   const email = el('authEmail').value.trim().toLowerCase();
   const password = el('authPassword').value;
+
+  if (authMode === 'signup' && !/^[A-Za-z0-9_]{3,20}$/.test(username)) {
+    el('authError').textContent = 'Username must be 3-20 characters using letters, numbers, or _.';
+    return;
+  }
 
   if (!email.endsWith('@gmail.com')) {
     el('authError').textContent = 'Please use a Gmail address.';
@@ -406,18 +426,37 @@ el('authForm').onsubmit = async e => {
 
   try {
     if (authMode === 'signup') {
-      const { data, error } = await supabaseClient.auth.signUp({
+      const {data:existingProfile,error:profileCheckError}=await supabaseClient
+        .from('profiles')
+        .select('id')
+        .ilike('username',username)
+        .limit(1);
+
+      if(profileCheckError) throw profileCheckError;
+      if(existingProfile && existingProfile.length){
+        el('authError').textContent='That username is already in use.';
+        el('authSubmit').disabled=false;
+        return;
+      }
+
+      const {data,error}=await supabaseClient.auth.signUp({
         email,
-        password
+        password,
+        options:{data:{username}}
       });
 
-      if (error) throw error;
+      if(error) throw error;
 
-      if (!data.session) {
-        el('authError').textContent =
-          'Account created! Check your Gmail to confirm your email.';
-      } else {
-        currentUser = email.split('@')[0].slice(0, 24);
+      if(data.user && data.user.identities && data.user.identities.length===0){
+        el('authError').textContent='That Gmail is already in use. Log in instead.';
+      }else if(!data.session){
+        localStorage.setItem('playboxPendingUsername_'+email,username);
+        el('authError').textContent='Account created! Check your Gmail to confirm your email.';
+      }else{
+        await ensureProfile(data.user,username);
+        currentUser=username;
+        localStorage.setItem('playboxUser',username);
+        localStorage.setItem('playboxUserEmail',email);
         closeAuth();
         updateAuth();
         renderContinue();
@@ -425,15 +464,21 @@ el('authForm').onsubmit = async e => {
       }
 
     } else {
-      const { data, error } =
-        await supabaseClient.auth.signInWithPassword({
-          email,
-          password
-        });
+      const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});
+      if(error) throw error;
 
-      if (error) throw error;
+      const pending=localStorage.getItem('playboxPendingUsername_'+email);
+      const profile=await ensureProfile(data.user,pending || data.user.user_metadata?.username);
+      if(!profile){
+        el('authError').textContent='Your account needs a PLAYBOX username. Please contact support.';
+        el('authSubmit').disabled=false;
+        return;
+      }
 
-      currentUser = email.split('@')[0].slice(0, 24);
+      currentUser=profile.username;
+      localStorage.setItem('playboxUser',profile.username);
+      localStorage.setItem('playboxUserEmail',email);
+      localStorage.removeItem('playboxPendingUsername_'+email);
       closeAuth();
       updateAuth();
       renderContinue();
@@ -466,25 +511,18 @@ fullscreenBtn.style.cssText='position:absolute;right:14px;bottom:14px;z-index:6;
 document.querySelector('.gamearea').appendChild(fullscreenBtn);
 document.addEventListener('fullscreenchange',()=>{fullscreenBtn.textContent=document.fullscreenElement?'⛶ Exit Fullscreen':'⛶ Fullscreen'});
 async function restoreSession(){
-  const { data, error } = await supabaseClient.auth.getSession();
-
-  if(error){
-    console.error('Session restore error:', error);
-    return;
-  }
-
+  const {data,error}=await supabaseClient.auth.getSession();
+  if(error){console.error('Session restore error:',error);return}
   if(data.session){
-    const email = data.session.user.email || '';
-    currentUser = email.split('@')[0].slice(0,24);
-    localStorage.setItem('playboxUserEmail', email);
-    updateAuth();
-    renderContinue();
-    loadFavorites();
+    const user=data.session.user;
+    const profile=await getProfileForUser(user.id);
+    const email=user.email||'';
+    currentUser=profile?.username||localStorage.getItem('playboxUser')||email.split('@')[0].slice(0,24);
+    localStorage.setItem('playboxUserEmail',email);
+    if(profile?.username)localStorage.setItem('playboxUser',profile.username);
+    updateAuth();renderContinue();loadFavorites();
   }else{
-    currentUser = '';
-    favoritesCache=[];
-    updateAuth();
-    renderContinue();
+    currentUser='';favoritesCache=[];updateAuth();renderContinue();
   }
 }
 
