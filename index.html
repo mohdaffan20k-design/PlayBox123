@@ -376,5 +376,29 @@ const fullscreenBtn=document.createElement('button');fullscreenBtn.type='button'
 fullscreenBtn.style.cssText='position:absolute;right:14px;bottom:14px;z-index:6;background:#000b;border:1px solid #ffffff2b;color:#fff;padding:9px 12px;border-radius:9px;font-size:13px;font-weight:800;cursor:pointer';
 document.querySelector('.gamearea').appendChild(fullscreenBtn);
 document.addEventListener('fullscreenchange',()=>{fullscreenBtn.textContent=document.fullscreenElement?'⛶ Exit Fullscreen':'⛶ Fullscreen'});
-render();renderFavorites();updateNotifications();if(currentUser&&!localStorage.getItem('playboxUserEmail')){let email=currentEmail();if(email)localStorage.setItem('playboxUserEmail',email)}updateAuth();renderContinue();
+async function restoreSession(){
+  const { data, error } = await supabaseClient.auth.getSession();
+
+  if(error){
+    console.error('Session restore error:', error);
+    return;
+  }
+
+  if(data.session){
+    const email = data.session.user.email || '';
+    currentUser = email.split('@')[0].slice(0,24);
+    localStorage.setItem('playboxUserEmail', email);
+    updateAuth();
+    renderContinue();
+  }else{
+    currentUser = '';
+    updateAuth();
+    renderContinue();
+  }
+}
+
+render();
+renderFavorites();
+updateNotifications();
+restoreSession();
 </script></body></html>
