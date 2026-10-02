@@ -190,89 +190,98 @@ const el=id=>document.getElementById(id);
 function formatTime(sec){sec=Math.max(0,Math.floor(sec));if(sec<60)return sec+'s played';let m=Math.floor(sec/60);if(m<60)return m+' min played';let h=Math.floor(m/60),rm=m%60;return h+'h'+(rm?' '+rm+'m':'')+' played'}
 
 function favKey(){return 'playboxFavorites_'+currentUser}
+let favoritesCache=[];
+function getFavorites(){return favoritesCache}
+function isFavorite(name){return favoritesCache.includes(name)}
+async function loadFavorites(){
+  if(!currentUser){
+    favoritesCache=[];
+    renderFavorites();
+    render();
+    return;
+  }
 
-async function getFavorites(){
-  if(!currentUser)return [];
+  const { data:userData, error:userError } = await supabaseClient.auth.getUser();
+  const user=userData?.user;
+
+  if(userError || !user){
+    console.error('Favorites user error:', userError);
+    favoritesCache=[];
+    renderFavorites();
+    render();
+    return;
+  }
 
   const { data, error } = await supabaseClient
     .from('favorites')
     .select('game_name')
-    .eq('user_id', (await supabaseClient.auth.getUser()).data.user.id);
+    .eq('user_id', user.id)
+    .order('created_at', { ascending:false });
 
   if(error){
     console.error('Favorites load error:', error);
-    return [];
+    return;
   }
 
-  return data.map(row => row.game_name);
+  favoritesCache=(data||[]).map(row=>row.game_name);
+  render();
+  updateModalFavorite();
+  updateNotifications();
 }
-
 async function toggleFavorite(name){
-  if(!currentUser){
-    openAuth('login');
+  if(!currentUser){openAuth('login');return}
+
+  const { data:userData, error:userError } = await supabaseClient.auth.getUser();
+  const user=userData?.user;
+  if(userError || !user){
+    console.error('Favorites user error:', userError);
     return;
   }
 
-  const { data: userData } = await supabaseClient.auth.getUser();
-  const user = userData.user;
+  const wasFavorite=favoritesCache.includes(name);
 
-  if(!user)return;
-
-  const { data: existing, error: checkError } = await supabaseClient
-    .from('favorites')
-    .select('game_name')
-    .eq('user_id', user.id)
-    .eq('game_name', name)
-    .maybeSingle();
-
-  if(checkError){
-    console.error('Favorite check error:', checkError);
-    return;
+  if(wasFavorite){
+    favoritesCache=favoritesCache.filter(x=>x!==name);
+  }else{
+    favoritesCache=[name,...favoritesCache].slice(0,30);
   }
 
-  if(existing){
+  render();
+  updateModalFavorite();
+  updateNotifications();
+
+  if(wasFavorite){
     const { error } = await supabaseClient
       .from('favorites')
       .delete()
       .eq('user_id', user.id)
       .eq('game_name', name);
 
-    if(error)console.error('Favorite remove error:', error);
+    if(error){
+      console.error('Favorite remove error:', error);
+      await loadFavorites();
+    }
   }else{
     const { error } = await supabaseClient
       .from('favorites')
-      .insert({
-        user_id: user.id,
-        game_name: name
-      });
+      .insert({user_id:user.id,game_name:name});
 
-    if(error)console.error('Favorite add error:', error);
+    if(error){
+      console.error('Favorite add error:', error);
+      await loadFavorites();
+    }
   }
-
-  render();
-  renderFavorites();
-  updateModalFavorite();
-  updateNotifications();
-}async function renderFavorites(){
+}
+function renderFavorites(){
   let sec=el('favSection');
-
-  if(!currentUser){
-    sec.classList.remove('show');
-    return;
-  }
-
-  let favorites=await getFavorites();
-  let list=favorites.map(n=>games.find(g=>g.name===n)).filter(Boolean);
-
-  if(!list.length){
-    sec.classList.remove('show');
-    return;
-  }
-
+  if(!currentUser){sec.classList.remove('show');return}
+  let list=favoritesCache.map(n=>games.find(g=>g.name===n)).filter(Boolean);
+  if(!list.length){sec.classList.remove('show');return}
   sec.classList.add('show');
   el('favGames').innerHTML=list.map(card).join('');
 }
- {id:'first',icon:'🎮',name:'First Game',desc:'Play your first game.',test:()=>getPlayed().length>=1},
+const achievements=[
+{id:'first',icon:'🎮',name:'First Game',desc:'Play your first game.',test:()=>getPlayed().length>=1},
  {id:'ten',icon:'🔥',name:'10 Games',desc:'Play 10 different games.',test:()=>getPlayed().length>=10},
  {id:'twentyfive',icon:'🏆',name:'Game Collector',desc:'Play 25 different games.',test:()=>getPlayed().length>=25},
  {id:'favorite',icon:'❤️',name:'Curator',desc:'Save your first favorite.',test:()=>getFavorites().length>=1},
@@ -359,6 +368,7 @@ function updateAuth(){
     el('menuLogout').onclick=async ()=>{
       await supabaseClient.auth.signOut();
       currentUser='';
+      favoritesCache=[];
       localStorage.removeItem('playboxUser');
       updateAuth();
       renderContinue();
@@ -411,6 +421,7 @@ el('authForm').onsubmit = async e => {
         closeAuth();
         updateAuth();
         renderContinue();
+        loadFavorites();
       }
 
     } else {
@@ -426,6 +437,7 @@ el('authForm').onsubmit = async e => {
       closeAuth();
       updateAuth();
       renderContinue();
+      loadFavorites();
     }
 
   } catch (error) {
@@ -467,8 +479,10 @@ async function restoreSession(){
     localStorage.setItem('playboxUserEmail', email);
     updateAuth();
     renderContinue();
+    loadFavorites();
   }else{
     currentUser = '';
+    favoritesCache=[];
     updateAuth();
     renderContinue();
   }
