@@ -190,11 +190,88 @@ const el=id=>document.getElementById(id);
 function formatTime(sec){sec=Math.max(0,Math.floor(sec));if(sec<60)return sec+'s played';let m=Math.floor(sec/60);if(m<60)return m+' min played';let h=Math.floor(m/60),rm=m%60;return h+'h'+(rm?' '+rm+'m':'')+' played'}
 
 function favKey(){return 'playboxFavorites_'+currentUser}
-function getFavorites(){return currentUser?JSON.parse(localStorage.getItem(favKey())||'[]'):[]}
-function isFavorite(name){return getFavorites().includes(name)}
-function toggleFavorite(name){if(!currentUser){openAuth('login');return}let f=getFavorites(),i=f.indexOf(name);if(i>=0)f.splice(i,1);else f.unshift(name);localStorage.setItem(favKey(),JSON.stringify(f.slice(0,30)));render();renderFavorites();updateModalFavorite();updateNotifications()}
-function renderFavorites(){let sec=el('favSection');if(!currentUser){sec.classList.remove('show');return}let list=getFavorites().map(n=>games.find(g=>g.name===n)).filter(Boolean);if(!list.length){sec.classList.remove('show');return}sec.classList.add('show');el('favGames').innerHTML=list.map(card).join('')}
-const achievements=[
+
+async function getFavorites(){
+  if(!currentUser)return [];
+
+  const { data, error } = await supabaseClient
+    .from('favorites')
+    .select('game_name')
+    .eq('user_id', (await supabaseClient.auth.getUser()).data.user.id);
+
+  if(error){
+    console.error('Favorites load error:', error);
+    return [];
+  }
+
+  return data.map(row => row.game_name);
+}
+
+async function toggleFavorite(name){
+  if(!currentUser){
+    openAuth('login');
+    return;
+  }
+
+  const { data: userData } = await supabaseClient.auth.getUser();
+  const user = userData.user;
+
+  if(!user)return;
+
+  const { data: existing, error: checkError } = await supabaseClient
+    .from('favorites')
+    .select('game_name')
+    .eq('user_id', user.id)
+    .eq('game_name', name)
+    .maybeSingle();
+
+  if(checkError){
+    console.error('Favorite check error:', checkError);
+    return;
+  }
+
+  if(existing){
+    const { error } = await supabaseClient
+      .from('favorites')
+      .delete()
+      .eq('user_id', user.id)
+      .eq('game_name', name);
+
+    if(error)console.error('Favorite remove error:', error);
+  }else{
+    const { error } = await supabaseClient
+      .from('favorites')
+      .insert({
+        user_id: user.id,
+        game_name: name
+      });
+
+    if(error)console.error('Favorite add error:', error);
+  }
+
+  render();
+  renderFavorites();
+  updateModalFavorite();
+  updateNotifications();
+}async function renderFavorites(){
+  let sec=el('favSection');
+
+  if(!currentUser){
+    sec.classList.remove('show');
+    return;
+  }
+
+  let favorites=await getFavorites();
+  let list=favorites.map(n=>games.find(g=>g.name===n)).filter(Boolean);
+
+  if(!list.length){
+    sec.classList.remove('show');
+    return;
+  }
+
+  sec.classList.add('show');
+  el('favGames').innerHTML=list.map(card).join('');
+}
  {id:'first',icon:'🎮',name:'First Game',desc:'Play your first game.',test:()=>getPlayed().length>=1},
  {id:'ten',icon:'🔥',name:'10 Games',desc:'Play 10 different games.',test:()=>getPlayed().length>=10},
  {id:'twentyfive',icon:'🏆',name:'Game Collector',desc:'Play 25 different games.',test:()=>getPlayed().length>=25},
