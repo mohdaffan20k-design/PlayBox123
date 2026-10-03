@@ -307,24 +307,174 @@ function getPlayTime(name){return getPlayTimes()[name]||0}
 function trackGameTime(){if(!currentUser||!activeGame||!gameStartedAt)return;let times=getPlayTimes();times[activeGame]=(times[activeGame]||0)+Math.max(0,Math.floor((Date.now()-gameStartedAt)/1000));localStorage.setItem(playTimeKey(),JSON.stringify(times));gameStartedAt=Date.now()}
 function savePlayed(name){if(!currentUser)return;trackGameTime();let key='playboxPlayed_'+currentUser;let played=JSON.parse(localStorage.getItem(key)||'[]').filter(x=>x!==name);played.unshift(name);localStorage.setItem(key,JSON.stringify(played.slice(0,8)));renderContinue()}
  function renderContinue(){let section=el('continueSection');if(!currentUser||filter!=='all'||query){section.classList.remove('show');return}let played=JSON.parse(localStorage.getItem('playboxPlayed_'+currentUser)||'[]').map(n=>games.find(g=>g.name===n)).filter(Boolean);if(!played.length){section.classList.remove('show');return}section.classList.add('show');el('continueGames').innerHTML=played.map(card).join('');updateNotifications()}
-function friendKey(){return 'playboxFriends_'+currentUser}
-function getFriends(){return currentUser?JSON.parse(localStorage.getItem(friendKey())||'[]'):[]}
-function setFriends(list){if(currentUser)localStorage.setItem(friendKey(),JSON.stringify(list))}
-function getRequests(){return currentUser?JSON.parse(localStorage.getItem('playboxRequests_'+currentUser)||'[]'):[]}
-function setRequests(list){if(currentUser)localStorage.setItem('playboxRequests_'+currentUser,JSON.stringify(list))}
-function friendStatus(name){let friends=getFriends();return friends.find(x=>x.name===name)}
-function renderFriendMini(){let box=el('friendMiniList'),friends=getFriends();box.innerHTML=friends.length?friends.slice(0,5).map(f=>`<div class="friendmini" onclick="openChat('${f.name.replaceAll("'","\\'")}')"><div class="socialavatar" style="width:30px;height:30px;font-size:12px">${f.avatar?`<img src="${f.avatar}" alt="">`:'👤'}</div><span style="font-size:13px;font-weight:800">${f.name}</span>${f.playing?'<span class="dot"></span>':''}</div>`).join(''):'<small style="color:var(--muted)">No friends yet.</small>'}
-function renderSocial(){if(!currentUser){el('socialContent').innerHTML='<div class="empty">Log in first to use Social.</div>';return}renderFriendMini();let c=el('socialContent');el('socialTitle').textContent={friends:'Friends',requests:'Friend Requests',add:'Add Friend',activity:'Join / Activity'}[socialTab];if(socialTab==='add'){c.innerHTML='<form class="socialform" id="addFriendForm"><input id="friendName" placeholder="Search username..."><button>Add Friend</button></form><p style="color:var(--muted);font-size:13px">Find someone by their PLAYBOX username. Add, accept, chat, and join games like a Roblox-style friends list.</p>';el('addFriendForm').onsubmit=e=>{e.preventDefault();let name=el('friendName').value.trim();if(!name)return;let friends=getFriends();if(name.toLowerCase()===currentUser.toLowerCase()||friends.some(x=>x.name.toLowerCase()===name.toLowerCase())){alert('You are already friends or this is your account.');return}let req=getRequests();if(!req.some(x=>x.name.toLowerCase()===currentUser.toLowerCase()))req.push({name:currentUser,avatar:localStorage.getItem('playboxAvatar_'+currentEmail())||'',sentAt:Date.now()});localStorage.setItem('playboxDemoPending_'+name.toLowerCase(),JSON.stringify(req));el('friendName').value='';alert('Friend request sent.');};return}if(socialTab==='requests'){let req=getRequests();c.innerHTML=req.length?req.map((r,i)=>`<div class="socialrow"><div class="socialavatar">${r.avatar?`<img src="${r.avatar}" alt="">`:'👤'}</div><div><div class="socialname">${r.name}</div><div class="socialstatus">Sent you a friend request</div></div><div class="socialactions"><button onclick="acceptFriend(${i})">Accept</button><button class="secondary" onclick="declineFriend(${i})">Decline</button></div></div>`).join(''):'<div class="empty">No friend requests.</div>';return}if(socialTab==='activity'){let friends=getFriends();c.innerHTML=friends.length?friends.map(f=>`<div class="activity-card"><strong>${f.name}</strong><small>${f.playing?'🟢 Playing '+f.playing:'⚪ Offline'}</small>${f.playing?`<div class="socialactions" style="margin-top:10px"><button onclick="openGame('${f.playing.replaceAll("'","\\'")}')">Join Game</button><button class="secondary" onclick="openChat('${f.name.replaceAll("'","\\'")}')">Chat</button></div>`:''}${f.lastPlayed?`<small>Last played: ${f.lastPlayed}</small>`:''}</div>`).join(''):'<div class="empty">Add friends to see what they are playing.</div>';return}let friends=getFriends();c.innerHTML=friends.length?friends.map((f,i)=>`<div class="socialrow"><div class="socialavatar">${f.avatar?`<img src="${f.avatar}" alt="">`:'👤'}</div><div><div class="socialname">${f.name}</div><div class="socialstatus">${f.playing?'🟢 Playing '+f.playing:'⚪ Offline'}</div></div><div class="socialactions">${f.playing?`<button onclick="openGame('${f.playing.replaceAll("'","\\'")}')">Join</button>`:''}<button class="secondary" onclick="openChat('${f.name.replaceAll("'","\\'")}')">Chat</button><button class="secondary" onclick="removeFriend(${i})">Remove</button></div></div>`).join(''):'<div class="empty">No friends yet.<br>Use “Add Friend” to find someone.</div>'}
-function acceptFriend(i){let req=getRequests(),r=req[i];if(!r)return;let friends=getFriends();if(!friends.some(x=>x.name===r.name))friends.push({...r,playing:'',lastPlayed:''});setFriends(friends);req.splice(i,1);setRequests(req);renderSocial()}
-function declineFriend(i){let req=getRequests();req.splice(i,1);setRequests(req);renderSocial()}
-function removeFriend(i){let friends=getFriends();friends.splice(i,1);setFriends(friends);renderSocial()}
-function openSocial(tab='friends'){if(!currentUser){openAuth('login');return}socialTab=tab;document.querySelectorAll('.socialtab').forEach(b=>b.classList.toggle('active',b.dataset.social===tab));el('socialModal').classList.add('open');renderSocial()}
-function chatKey(name){return 'playboxChat_'+[currentUser,name].sort().join('_')}
-function openChat(name){chatFriend=name;el('chatTitle').textContent=name;let f=friendStatus(name);el('chatAvatar').innerHTML=f&&f.avatar?`<img src="${f.avatar}" alt="">`:'👤';el('chatModal').classList.add('open');renderChat();setTimeout(()=>el('chatInput').focus(),50)}
-function renderChat(){let msgs=JSON.parse(localStorage.getItem(chatKey(chatFriend))||'[]');el('chatMessages').innerHTML=msgs.length?msgs.map(m=>`<div class="bubble ${m.from===currentUser?'me':''}">${m.text.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;')}<small>${m.from===currentUser?'You':m.from}</small></div>`).join(''):'<div style="text-align:center;color:var(--muted);padding:50px 10px">No messages yet. Say hi 👋</div>';el('chatMessages').scrollTop=el('chatMessages').scrollHeight}
-el('chatForm').onsubmit=e=>{e.preventDefault();let text=el('chatInput').value.trim();if(!text||!chatFriend)return;let msgs=JSON.parse(localStorage.getItem(chatKey(chatFriend))||'[]');msgs.push({from:currentUser,text,time:Date.now()});localStorage.setItem(chatKey(chatFriend),JSON.stringify(msgs));el('chatInput').value='';renderChat()}
-document.querySelectorAll('.socialtab').forEach(b=>b.onclick=()=>openSocial(b.dataset.social));el('socialClose').onclick=()=>el('socialModal').classList.remove('open');el('socialModal').onclick=e=>{if(e.target===el('socialModal'))el('socialModal').classList.remove('open')};el('chatClose').onclick=()=>el('chatModal').classList.remove('open');el('chatModal').onclick=e=>{if(e.target===el('chatModal'))el('chatModal').classList.remove('open')};
-function updateFriendActivity(){if(!currentUser)return;let friends=getFriends();let playing=activeGame||'';let key='playboxActivity_'+currentUser;localStorage.setItem(key,JSON.stringify({name:currentUser,playing,lastPlayed:playing||((JSON.parse(localStorage.getItem(key)||'{}')).lastPlayed||'')}));setFriends(friends)}
+async function getSocialUser(){
+  const {data,error}=await supabaseClient.auth.getUser();
+  if(error||!data?.user)return null;
+  return data.user;
+}
+async function getFriendRows(){
+  const user=await getSocialUser();
+  if(!user)return [];
+  const {data,error}=await supabaseClient.from('friendships').select('id,requester_id,receiver_id,status,created_at').or(`requester_id.eq.${user.id},receiver_id.eq.${user.id}`).order('created_at',{ascending:false});
+  if(error){console.error('Friend list error:',error);return []}
+  const rows=data||[];
+  const ids=[...new Set(rows.flatMap(r=>[r.requester_id,r.receiver_id]).filter(id=>id!==user.id))];
+  if(!ids.length)return rows.map(r=>({...r,other:null,otherId:r.requester_id===user.id?r.receiver_id:r.requester_id}));
+  const {data:profiles,error:profileError}=await supabaseClient.from('profiles').select('id,username,avatar_url,current_game,last_played').in('id',ids);
+  if(profileError){console.error('Friend profiles error:',profileError);return rows.map(r=>({...r,other:null,otherId:r.requester_id===user.id?r.receiver_id:r.requester_id}))}
+  const map=Object.fromEntries((profiles||[]).map(p=>[p.id,p]));
+  return rows.map(r=>({...r,otherId:r.requester_id===user.id?r.receiver_id:r.requester_id,other:map[r.requester_id===user.id?r.receiver_id:r.requester_id]||null}));
+}
+async function getFriends(){
+  const rows=await getFriendRows();
+  return rows.filter(r=>r.status==='accepted'&&r.other).map(r=>({id:r.id,userId:r.otherId,name:r.other.username,avatar:r.other.avatar_url||'',playing:r.other.current_game||'',lastPlayed:r.other.last_played||''}));
+}
+async function getRequests(){
+  const user=await getSocialUser();
+  if(!user)return [];
+  const rows=await getFriendRows();
+  return rows.filter(r=>r.status==='pending'&&r.receiver_id===user.id&&r.other).map(r=>({id:r.id,userId:r.otherId,name:r.other.username,avatar:r.other.avatar_url||'',sentAt:r.created_at}));
+}
+async function friendStatus(name){
+  const friends=await getFriends();
+  return friends.find(x=>x.name.toLowerCase()===String(name).toLowerCase())||null;
+}
+function socialEscape(value){return String(value||'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;')}
+function socialJs(value){return String(value||'').replaceAll('\\','\\\\').replaceAll("'","\\'")}
+async function renderFriendMini(){
+  let box=el('friendMiniList');
+  if(!box)return;
+  const friends=await getFriends();
+  box.innerHTML=friends.length?friends.slice(0,5).map(f=>`<div class="friendmini" onclick="openChat('${socialJs(f.name)}')"><div class="socialavatar" style="width:30px;height:30px;font-size:12px">${f.avatar?`<img src="${socialEscape(f.avatar)}" alt="">`:'👤'}</div><span style="font-size:13px;font-weight:800">${socialEscape(f.name)}</span>${f.playing?'<span class="dot"></span>':''}</div>`).join(''):'<small style="color:var(--muted)">No friends yet.</small>';
+}
+async function renderSocial(){
+  if(!currentUser){el('socialContent').innerHTML='<div class="empty">Log in first to use Social.</div>';return}
+  const c=el('socialContent');
+  el('socialTitle').textContent={friends:'Friends',requests:'Friend Requests',add:'Add Friend',activity:'Join / Activity'}[socialTab];
+  await renderFriendMini();
+  if(socialTab==='add'){
+    c.innerHTML='<form class="socialform" id="addFriendForm"><input id="friendName" placeholder="Search username..." maxlength="20"><button>Add Friend</button></form><p style="color:var(--muted);font-size:13px">Find someone by their PLAYBOX username. Friend requests now work across devices.</p>';
+    el('addFriendForm').onsubmit=async e=>{
+      e.preventDefault();
+      const name=el('friendName').value.trim();
+      if(!name)return;
+      const user=await getSocialUser();
+      if(!user)return;
+      if(name.toLowerCase()===currentUser.toLowerCase()){alert('You cannot add yourself.');return}
+      const {data:profiles,error:profileError}=await supabaseClient.from('profiles').select('id,username,avatar_url').ilike('username',name).limit(2);
+      if(profileError){console.error(profileError);alert('Could not search users. Make sure the Friends SQL setup is complete.');return}
+      const target=(profiles||[])[0];
+      if(!target){alert('No PLAYBOX user found with that username.');return}
+      const {data:outgoing}=await supabaseClient.from('friendships').select('id,status').eq('requester_id',user.id).eq('receiver_id',target.id).maybeSingle();
+      const {data:incoming}=await supabaseClient.from('friendships').select('id,status').eq('requester_id',target.id).eq('receiver_id',user.id).maybeSingle();
+      const existing=outgoing||incoming;
+      if(existing?.status==='accepted'){alert('You are already friends.');return}
+      if(existing?.status==='pending'){alert(outgoing?'Friend request already sent.':'That user already sent you a request. Check Friend Requests.');return}
+      if(outgoing){
+        const {error}=await supabaseClient.from('friendships').update({status:'pending',created_at:new Date().toISOString(),updated_at:new Date().toISOString()}).eq('id',outgoing.id);
+        if(error){console.error(error);alert('Could not send the friend request.');return}
+      }else if(incoming){
+        const {error}=await supabaseClient.from('friendships').update({requester_id:user.id,receiver_id:target.id,status:'pending',created_at:new Date().toISOString(),updated_at:new Date().toISOString()}).eq('id',incoming.id);
+        if(error){console.error(error);alert('Could not send the friend request.');return}
+      }else{
+        const {error}=await supabaseClient.from('friendships').insert({requester_id:user.id,receiver_id:target.id,status:'pending'});
+        if(error){console.error(error);alert('Could not send the friend request.');return}
+      }
+      el('friendName').value='';
+      alert('Friend request sent.');
+    };
+    return;
+  }
+  if(socialTab==='requests'){
+    const req=await getRequests();
+    c.innerHTML=req.length?req.map(r=>`<div class="socialrow"><div class="socialavatar">${r.avatar?`<img src="${socialEscape(r.avatar)}" alt="">`:'👤'}</div><div><div class="socialname">${socialEscape(r.name)}</div><div class="socialstatus">Sent you a friend request</div></div><div class="socialactions"><button onclick="acceptFriend('${socialJs(r.id)}')">Accept</button><button class="secondary" onclick="declineFriend('${socialJs(r.id)}')">Decline</button></div></div>`).join(''):'<div class="empty">No friend requests.</div>';
+    return;
+  }
+  const friends=await getFriends();
+  if(socialTab==='activity'){
+    c.innerHTML=friends.length?friends.map(f=>`<div class="activity-card"><strong>${socialEscape(f.name)}</strong><small>${f.playing?`🟢 Playing ${socialEscape(f.playing)}`:'⚪ Offline'}</small>${f.playing?`<div class="socialactions" style="margin-top:10px"><button onclick="openGame('${socialJs(f.playing)}')">Join Game</button><button class="secondary" onclick="openChat('${socialJs(f.name)}')">Chat</button></div>`:''}${f.lastPlayed?`<small>Last played: ${socialEscape(f.lastPlayed)}</small>`:''}</div>`).join(''):'<div class="empty">Add friends to see what they are playing.</div>';
+    return;
+  }
+  c.innerHTML=friends.length?friends.map(f=>`<div class="socialrow"><div class="socialavatar">${f.avatar?`<img src="${socialEscape(f.avatar)}" alt="">`:'👤'}</div><div><div class="socialname">${socialEscape(f.name)}</div><div class="socialstatus">${f.playing?`🟢 Playing ${socialEscape(f.playing)}`:'⚪ Offline'}</div></div><div class="socialactions">${f.playing?`<button onclick="openGame('${socialJs(f.playing)}')">Join</button>`:''}<button class="secondary" onclick="openChat('${socialJs(f.name)}')">Chat</button><button class="secondary" onclick="removeFriend('${socialJs(f.id)}')">Remove</button></div></div>`).join(''):'<div class="empty">No friends yet.<br>Use “Add Friend” to find someone.</div>';
+}
+async function acceptFriend(id){
+  const user=await getSocialUser();
+  if(!user)return;
+  const {error}=await supabaseClient.from('friendships').update({status:'accepted',updated_at:new Date().toISOString()}).eq('id',id).eq('receiver_id',user.id).eq('status','pending');
+  if(error){console.error(error);alert('Could not accept the friend request.');return}
+  await renderSocial();
+}
+async function declineFriend(id){
+  const user=await getSocialUser();
+  if(!user)return;
+  const {error}=await supabaseClient.from('friendships').delete().eq('id',id).eq('receiver_id',user.id).eq('status','pending');
+  if(error){console.error(error);alert('Could not decline the friend request.');return}
+  await renderSocial();
+}
+async function removeFriend(id){
+  const user=await getSocialUser();
+  if(!user)return;
+  if(!confirm('Remove this friend?'))return;
+  const {error}=await supabaseClient.from('friendships').delete().eq('id',id);
+  if(error){console.error(error);alert('Could not remove this friend.');return}
+  await renderSocial();
+}
+async function openSocial(tab='friends'){
+  if(!currentUser){openAuth('login');return}
+  socialTab=tab;
+  document.querySelectorAll('.socialtab').forEach(b=>b.classList.toggle('active',b.dataset.social===tab));
+  el('socialModal').classList.add('open');
+  await renderSocial();
+}
+async function openChat(name){
+  const f=await friendStatus(name);
+  if(!f){alert('You can only chat with accepted friends.');return}
+  chatFriend=name;
+  el('chatTitle').textContent=name;
+  el('chatAvatar').innerHTML=f.avatar?`<img src="${socialEscape(f.avatar)}" alt="">`:'👤';
+  el('chatModal').classList.add('open');
+  await renderChat();
+  setTimeout(()=>el('chatInput').focus(),50);
+}
+async function renderChat(){
+  const user=await getSocialUser();
+  const friend=await friendStatus(chatFriend);
+  if(!user||!friend)return;
+  const q1=supabaseClient.from('messages').select('id,sender_id,receiver_id,body,created_at').eq('sender_id',user.id).eq('receiver_id',friend.userId).order('created_at',{ascending:true});
+  const q2=supabaseClient.from('messages').select('id,sender_id,receiver_id,body,created_at').eq('sender_id',friend.userId).eq('receiver_id',user.id).order('created_at',{ascending:true});
+  const [{data:a,error:e1},{data:b,error:e2}]=await Promise.all([q1,q2]);
+  if(e1||e2){console.error('Chat load error:',e1||e2);el('chatMessages').innerHTML='<div style="text-align:center;color:var(--muted);padding:50px 10px">Chat is not ready yet. Run the Friends SQL setup first.</div>';return}
+  const msgs=[...(a||[]),...(b||[])].sort((x,y)=>new Date(x.created_at)-new Date(y.created_at));
+  el('chatMessages').innerHTML=msgs.length?msgs.map(m=>`<div class="bubble ${m.sender_id===user.id?'me':''}">${socialEscape(m.body)}<small>${m.sender_id===user.id?'You':socialEscape(chatFriend)}</small></div>`).join(''):'<div style="text-align:center;color:var(--muted);padding:50px 10px">No messages yet. Say hi 👋</div>';
+  el('chatMessages').scrollTop=el('chatMessages').scrollHeight;
+}
+el('chatForm').onsubmit=async e=>{
+  e.preventDefault();
+  const text=el('chatInput').value.trim();
+  if(!text||!chatFriend)return;
+  const user=await getSocialUser();
+  const friend=await friendStatus(chatFriend);
+  if(!user||!friend)return;
+  const {error}=await supabaseClient.from('messages').insert({sender_id:user.id,receiver_id:friend.userId,body:text});
+  if(error){console.error('Message send error:',error);alert('Could not send message.');return}
+  el('chatInput').value='';
+  await renderChat();
+};
+document.querySelectorAll('.socialtab').forEach(b=>b.onclick=()=>openSocial(b.dataset.social));
+el('socialClose').onclick=()=>el('socialModal').classList.remove('open');
+el('socialModal').onclick=e=>{if(e.target===el('socialModal'))el('socialModal').classList.remove('open')};
+el('chatClose').onclick=()=>el('chatModal').classList.remove('open');
+el('chatModal').onclick=e=>{if(e.target===el('chatModal'))el('chatModal').classList.remove('open')};
+async function updateFriendActivity(){
+  if(!currentUser)return;
+  const user=await getSocialUser();
+  if(!user)return;
+  const payload={current_game:activeGame||null};
+  if(activeGame)payload.last_played=activeGame;
+  const {error}=await supabaseClient.from('profiles').update(payload).eq('id',user.id);
+  if(error)console.error('Friend activity update error:',error);
+}
+
 function updateAuth(){
   let box=el('auth');
 
