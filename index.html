@@ -294,74 +294,63 @@ function achievementCount(){return achievements.filter(a=>a.test()).length}
 function formatTotal(sec){let m=Math.floor(sec/60);if(m<60)return m+'m';let h=Math.floor(m/60),rm=m%60;return h+'h'+(rm?' '+rm+'m':'')}
 function renderProfile(){if(!currentUser){openAuth('login');return}let email=currentEmail(),avatar=localStorage.getItem('playboxAvatar_'+email)||'';el('publicProfileName').textContent=currentUser;el('publicProfileEmail').textContent=email;el('publicProfileAvatar').innerHTML=avatar?`<img src="${avatar}" alt="Profile" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`:'👤';el('statPlayed').textContent=getPlayed().length;el('statTime').textContent=formatTotal(totalPlaytime());el('statFavs').textContent=getFavorites().length;el('statAch').textContent=achievementCount()+'/'+achievements.length;el('achievementsGrid').innerHTML=achievements.map(a=>`<div class="achievement ${a.test()?'':'locked'}"><b>${a.icon} ${a.name}</b><small>${a.desc}</small></div>`).join('');el('profileModal').classList.add('open')}
 function updateModalFavorite(){if(!activeGameData||!el('modalFav'))return;let yes=isFavorite(activeGameData.name);el('modalFav').classList.toggle('active',yes);el('modalFav').textContent=yes?'♥ Favorited':'♡ Favorite'}
-
-const socialNotifReads = new Set();
-let notificationChannel = null;
-async function getSocialUnread(){
+let notificationChannel=null;
+let socialNotifications=[];
+async function getSocialNotifications(){
   const user=await getSocialUser();
-  if(!user)return {messages:[],requests:[]};
-  const {data:reads,error:readError}=await supabaseClient.from('notification_reads').select('type,reference_id').eq('user_id',user.id);
-  if(readError){console.error('Notification read state error:',readError);return {messages:[],requests:[]}}
-  socialNotifReads.clear();
-  (reads||[]).forEach(r=>socialNotifReads.add(r.type+':'+r.reference_id));
-  const [{data:messages,error:messageError},{data:requests,error:requestError}]=await Promise.all([
-    supabaseClient.from('messages').select('id,sender_id,body,created_at').eq('receiver_id',user.id).order('created_at',{ascending:false}).limit(50),
-    supabaseClient.from('friendships').select('id,requester_id,created_at').eq('receiver_id',user.id).eq('status','pending').order('created_at',{ascending:false}).limit(50)
+  if(!user)return [];
+  const [{data:msgs,msgError},{data:reqs,reqError},{data:reads,readError}]=await Promise.all([
+    supabaseClient.from('messages').select('id,sender_id,body,created_at').eq('receiver_id',user.id).order('created_at',{ascending:false}).limit(100),
+    supabaseClient.from('friendships').select('id,requester_id,created_at').eq('receiver_id',user.id).eq('status','pending').order('created_at',{ascending:false}).limit(100),
+    supabaseClient.from('notification_reads').select('type,reference_id').eq('user_id',user.id)
   ]);
-  if(messageError)console.error('Notification messages error:',messageError);
-  if(requestError)console.error('Notification requests error:',requestError);
-  const ids=[...new Set([...(messages||[]).map(x=>x.sender_id),...(requests||[]).map(x=>x.requester_id)])];
+  if(msgError||reqError||readError){console.error('Notification load error:',msgError||reqError||readError);return []}
+  const readSet=new Set((reads||[]).map(r=>r.type+':'+r.reference_id));
+  const senderIds=[...new Set([...(msgs||[]).map(m=>m.sender_id),...(reqs||[]).map(r=>r.requester_id)])];
   let profiles=[];
-  if(ids.length){const {data,error}=await supabaseClient.from('profiles').select('id,username,avatar_url').in('id',ids);if(error)console.error('Notification profiles error:',error);else profiles=data||[]}
-  const pm=Object.fromEntries(profiles.map(p=>[p.id,p]));
-  return {
-    messages:(messages||[]).filter(m=>!socialNotifReads.has('message:'+m.id)).map(m=>({...m,sender:pm[m.sender_id]||null})),
-    requests:(requests||[]).filter(r=>!socialNotifReads.has('request:'+r.id)).map(r=>({...r,sender:pm[r.requester_id]||null}))
-  };
+  if(senderIds.length){const {data,error}=await supabaseClient.from('profiles').select('id,username,avatar_url').in('id',senderIds);if(!error)profiles=data||[]}
+  const names=Object.fromEntries(profiles.map(p=>[p.id,p]));
+  const out=[];
+  (msgs||[]).forEach(m=>{if(!readSet.has('message:'+m.id))out.push({id:m.id,type:'message',fromId:m.sender_id,name:names[m.sender_id]?.username||'Someone',body:m.body,created_at:m.created_at})});
+  (reqs||[]).forEach(r=>{if(!readSet.has('request:'+r.id))out.push({id:r.id,type:'request',fromId:r.requester_id,name:names[r.requester_id]?.username||'Someone',created_at:r.created_at})});
+  out.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+  return out;
 }
 async function markSocialNotificationRead(type,id){
   const user=await getSocialUser();
-  if(!user||!id)return;
-  socialNotifReads.add(type+':'+id);
-  const {error}=await supabaseClient.from('notification_reads').upsert({user_id:user.id,type,reference_id:String(id),read_at:new Date().toISOString()},{onConflict:'user_id,type,reference_id'});
-  if(error)console.error('Notification mark-read error:',error);
-}
-async function openNotification(type,id,name){
-  await markSocialNotificationRead(type,id);
-  el('notifMenu').classList.remove('open');
-  if(type==='message'){await openChat(name);}
-  else if(type==='request'){await openSocial('requests');}
-  await updateNotifications();
-}
-async function subscribeToNotifications(){
-  if(notificationChannel){await supabaseClient.removeChannel(notificationChannel);notificationChannel=null;}
-  const user=await getSocialUser();
   if(!user)return;
-  notificationChannel=supabaseClient.channel('playbox-notifications-'+user.id)
-    .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages',filter:'receiver_id=eq.'+user.id},()=>updateNotifications())
-    .on('postgres_changes',{event:'INSERT',schema:'public',table:'friendships',filter:'receiver_id=eq.'+user.id},()=>updateNotifications())
-    .subscribe(status=>{if(status==='CHANNEL_ERROR')console.error('Notification realtime channel error');});
+  const {error}=await supabaseClient.from('notification_reads').upsert({user_id:user.id,type,reference_id:String(id),read_at:new Date().toISOString()},{onConflict:'user_id,type,reference_id'});
+  if(error)console.error('Notification read error:',error);
 }
 async function updateNotifications(){
-  let count=achievementCount();
+  const count=achievementCount();
   const key='playboxSeenAchievements_'+currentUser;
   const seen=JSON.parse(localStorage.getItem(key)||'[]');
   const unlocked=achievements.filter(a=>a.test());
   const fresh=unlocked.filter(a=>!seen.includes(a.id));
-  if(fresh.length){localStorage.setItem(key,JSON.stringify(unlocked.map(a=>a.id)));}
-  let social={messages:[],requests:[]};
-  if(currentUser)social=await getSocialUnread();
-  const total=fresh.length+social.messages.length+social.requests.length;
-  el('notifBadge').textContent=total>99?'99+':total;
-  el('notifBadge').style.display=total?'flex':'none';
-  const items=[];
-  social.messages.forEach(m=>items.push(`<div class="notifitem" role="button" tabindex="0" onclick="openNotification('message','${m.id}','${socialEscape(m.sender?.username||'Player').replaceAll("'","\\'")}')"><b>💬 New message</b><small>${socialEscape(m.sender?.username||'Player')} sent you a message</small></div>`));
-  social.requests.forEach(r=>items.push(`<div class="notifitem" role="button" tabindex="0" onclick="openNotification('request','${r.id}','${socialEscape(r.sender?.username||'Player').replaceAll("'","\\'")}')"><b>👥 Friend request</b><small>${socialEscape(r.sender?.username||'Player')} wants to be your friend</small></div>`));
-  fresh.forEach(a=>items.push(`<div class="notifitem"><b>${a.icon} ${a.name} unlocked!</b><small>${a.desc}</small></div>`));
-  el('notifMenu').innerHTML=items.length?items.join(''):'<div class="notifitem"><b>🔔 No new notifications</b><small>You're all caught up.</small></div>';
+  if(fresh.length)localStorage.setItem(key,JSON.stringify(unlocked.map(a=>a.id)));
+  socialNotifications=await getSocialNotifications();
+  const total=fresh.length+socialNotifications.length;
+  const badge=el('notifBadge');
+  badge.textContent=total;
+  badge.style.display=total?'flex':'none';
+  const achievementHtml=fresh.map(a=>`<div class="notifitem"><b>${a.icon} ${a.name} unlocked!</b><small>${a.desc}</small></div>`).join('');
+  const socialHtml=socialNotifications.map(n=>n.type==='message'
+    ?`<div class="notifitem notification-click" data-notif-type="message" data-notif-id="${socialEscape(n.id)}" data-notif-from="${socialEscape(n.name)}"><b>💬 New Message</b><small>${socialEscape(n.name)} sent you a message.</small></div>`
+    :`<div class="notifitem notification-click" data-notif-type="request" data-notif-id="${socialEscape(n.id)}"><b>👥 Friend Request</b><small>${socialEscape(n.name)} sent you a friend request.</small></div>`).join('');
+  el('notifMenu').innerHTML=achievementHtml+socialHtml||( '<div class="notifitem"><b>🔔 No new notifications</b><small>You are all caught up.</small></div>' );
   return count;
 }
-
+async function subscribeToNotifications(){
+  if(notificationChannel){await supabaseClient.removeChannel(notificationChannel);notificationChannel=null}
+  const user=await getSocialUser();
+  if(!user)return;
+  notificationChannel=supabaseClient.channel('playbox-notifications-'+user.id)
+    .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages',filter:`receiver_id=eq.${user.id}`},()=>updateNotifications())
+    .on('postgres_changes',{event:'INSERT',schema:'public',table:'friendships',filter:`receiver_id=eq.${user.id}`},()=>updateNotifications())
+    .on('postgres_changes',{event:'UPDATE',schema:'public',table:'friendships',filter:`receiver_id=eq.${user.id}`},()=>updateNotifications())
+    .subscribe(status=>{if(status==='CHANNEL_ERROR')console.error('Notification realtime channel error')});
+}
 function card(g){let icon=g.icon,playedSec=currentUser?getPlayTime(g.name):0,yes=currentUser&&isFavorite(g.name);return `<article class="card" data-name="${g.name.toLowerCase()}" data-cat="${g.cat.join(' ')}" onclick="openGame('${g.name.replaceAll("'","\\'")}')"><button class="favbtn ${yes?'active':''}" title="${yes?'Remove from favorites':'Add to favorites'}" onclick="event.stopPropagation();toggleFavorite('${g.name.replaceAll("'","\\'")}')">${yes?'♥':'♡'}</button><div class="thumb" style="background:${g.bg}">${g.tag?`<span class="tag">${g.tag}</span>`:''}${icon?`<img src="${icon}" width="512" height="512" alt="${g.name} icon" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">`:''}<span style="display:${icon?'none':'block'}">${g.emoji}</span></div><div class="info"><strong>${g.name}</strong><small>${g.meta}</small>${playedSec?`<small>⏱ ${formatTime(playedSec)}</small>`:''}</div></article>`}
 function visible(g){if(query){let hay=(g.name+' '+g.meta+' '+g.cat.join(' ')).toLowerCase();return hay.includes(query)}return filter==='all'||g.cat.includes(filter)}
 function render(){let list=games.filter(visible);renderFavorites();el('count').textContent=`${list.length} games`;el('featured').innerHTML=list.slice(0,5).map(card).join('')||'<div class="empty">No games found. Try another search.</div>';el('games').innerHTML=list.slice(5).map(card).join('')|| (list.length?'<div class="empty">That’s all for now.</div>':'<div class="empty">No games found. Try another search.</div>')}
@@ -594,8 +583,6 @@ function startPresenceHeartbeat(){
   presenceHeartbeat=setInterval(updateFriendActivity,15000);
 }
 
-async function startNotificationSystem(){await subscribeToNotifications();await updateNotifications()}
-
 function updateAuth(){
   let box=el('auth');
 
@@ -639,13 +626,14 @@ function updateAuth(){
     el('menuLogout').onclick=async ()=>{
       if(presenceHeartbeat)clearInterval(presenceHeartbeat);
       presenceHeartbeat=null;
-      if(notificationChannel){supabaseClient.removeChannel(notificationChannel);notificationChannel=null;}
       await supabaseClient.auth.signOut();
       currentUser='';
       favoritesCache=[];
       localStorage.removeItem('playboxUser');
+      if(notificationChannel){await supabaseClient.removeChannel(notificationChannel);notificationChannel=null}
       updateAuth();
       renderContinue();
+      updateNotifications();
     };
 
   }else{
@@ -736,7 +724,6 @@ el('authForm').onsubmit = async e => {
         renderContinue();
         loadFavorites();
         startPresenceHeartbeat();
-        startNotificationSystem();
       }
 
     } else {
@@ -760,7 +747,6 @@ el('authForm').onsubmit = async e => {
       renderContinue();
       loadFavorites();
       startPresenceHeartbeat();
-      startNotificationSystem();
     }
 
   } catch (error) {
@@ -837,9 +823,7 @@ el('changePassword').onclick=()=>{let email=currentEmail(),account=JSON.parse(lo
     btn.disabled=false;
     btn.textContent='Delete';
   }
-};el('notifBtn').onclick=async e=>{e.stopPropagation();el('notifMenu').classList.toggle('open');if(el('notifMenu').classList.contains('open'))await updateNotifications()};
-document.addEventListener('click',e=>{let nw=el('notifWrap');if(nw&&!nw.contains(e.target))el('notifMenu').classList.remove('open')});
-document.addEventListener('click',e=>{let wrap=document.querySelector('.profile-wrap');if(wrap&&!wrap.contains(e.target)){let menu=el('profileMenu');if(menu)menu.classList.remove('open')}});
+};document.addEventListener('click',e=>{let wrap=document.querySelector('.profile-wrap');if(wrap&&!wrap.contains(e.target)){let menu=el('profileMenu');if(menu)menu.classList.remove('open')}});
 function openGame(name){let g=games.find(x=>x.name===name);if(!g)return;trackGameTime();activeGame=currentUser?g.name:'';gameStartedAt=currentUser?Date.now():0;activeGameData=g;el('modalTitle').textContent=g.name;el('modalEmoji').textContent=g.emoji;el('modalMeta').textContent=g.meta;el('modalDesc').textContent=`${g.name} • ${g.meta}. PLAYBOX opens the official game when embedding is supported.`;el('modalText').textContent=currentUser?`${g.name} — saved to Continue Playing and your stats.`:`${g.name} — loading the official game`;el('gameFrame').src=g.url;el('gameFrame').style.display='block';el('gameFallback').style.display='none';el('launch').textContent='Open official site';el('modal').classList.add('open');savePlayed(g.name);updateFriendActivity();updateModalFavorite();el('launch').onclick=()=>window.open(g.url,'_blank','noopener,noreferrer');el('modalNewTab').onclick=()=>window.open(g.url,'_blank','noopener,noreferrer')}
 
 setInterval(()=>{if(document.getElementById('modal').classList.contains('open')){trackGameTime();renderContinue()}},30000);
@@ -848,7 +832,17 @@ el('launch').onclick=()=>{};
 
 el('modalFav').onclick=()=>{if(activeGameData)toggleFavorite(activeGameData.name)};
 el('profileClose').onclick=()=>el('profileModal').classList.remove('open');el('profileModal').onclick=e=>{if(e.target===el('profileModal'))el('profileModal').classList.remove('open')};
-el('notifBtn').onclick=e=>{e.stopPropagation();el('notifMenu').classList.toggle('open')};document.addEventListener('click',e=>{if(!el('notifWrap').contains(e.target))el('notifMenu').classList.remove('open')});
+el('notifBtn').onclick=async e=>{e.stopPropagation();await updateNotifications();el('notifMenu').classList.toggle('open')};
+el('notifMenu').addEventListener('click',async e=>{
+  const item=e.target.closest('.notification-click');
+  if(!item)return;
+  const type=item.dataset.notifType,id=item.dataset.notifId,from=item.dataset.notifFrom||'';
+  await markSocialNotificationRead(type,id);
+  if(type==='message'){el('notifMenu').classList.remove('open');await openChat(from);}
+  else{el('notifMenu').classList.remove('open');await openSocial('requests');}
+  await updateNotifications();
+});
+document.addEventListener('click',e=>{if(!el('notifWrap').contains(e.target))el('notifMenu').classList.remove('open')});
 const fullscreenBtn=document.createElement('button');fullscreenBtn.type='button';fullscreenBtn.id='fullscreenBtn';fullscreenBtn.textContent='⛶ Fullscreen';fullscreenBtn.onclick=()=>{let area=document.querySelector('.gamearea');if(document.fullscreenElement){document.exitFullscreen()}else if(area&&area.requestFullscreen){area.requestFullscreen()}};
 fullscreenBtn.style.cssText='position:absolute;right:14px;bottom:14px;z-index:6;background:#000b;border:1px solid #ffffff2b;color:#fff;padding:9px 12px;border-radius:9px;font-size:13px;font-weight:800;cursor:pointer';
 document.querySelector('.gamearea').appendChild(fullscreenBtn);
@@ -863,9 +857,9 @@ async function restoreSession(){
     currentUser=profile?.username||localStorage.getItem('playboxUser')||email.split('@')[0].slice(0,24);
     localStorage.setItem('playboxUserEmail',email);
     if(profile?.username)localStorage.setItem('playboxUser',profile.username);
-    updateAuth();renderContinue();loadFavorites();startPresenceHeartbeat();startNotificationSystem();
+    updateAuth();renderContinue();loadFavorites();startPresenceHeartbeat();subscribeToNotifications();updateNotifications();
   }else{
-    currentUser='';favoritesCache=[];if(presenceHeartbeat)clearInterval(presenceHeartbeat);presenceHeartbeat=null;updateAuth();renderContinue();
+    currentUser='';favoritesCache=[];if(presenceHeartbeat)clearInterval(presenceHeartbeat);presenceHeartbeat=null;if(notificationChannel){supabaseClient.removeChannel(notificationChannel);notificationChannel=null}updateAuth();renderContinue();updateNotifications();
   }
 }
 
@@ -873,6 +867,4 @@ render();
 renderFavorites();
 updateNotifications();
 restoreSession();
-
-if(currentUser){startNotificationSystem();}
 </script></body></html>
