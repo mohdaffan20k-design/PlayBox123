@@ -22,7 +22,7 @@ header{height:76px;background:var(--surface);border-bottom:1px solid var(--borde
 </style>
 <style>.thumb img{width:auto;height:auto;max-width:100%;max-height:100%;object-fit:contain}</style>
 <style>.profile-wrap{position:relative}.profile-btn{display:flex!important;align-items:center;gap:9px}.avatar{width:30px;height:30px;border-radius:50%;object-fit:cover;background:var(--surface2);display:inline-flex;align-items:center;justify-content:center;font-size:14px}.profile-menu{position:absolute;right:0;top:48px;width:210px;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:7px;box-shadow:0 18px 50px #0005;display:none;z-index:20}.profile-menu.open{display:block}.profile-menu button{width:100%;text-align:left;border:0;background:transparent!important;color:var(--text)!important;padding:11px 12px;border-radius:9px;font-weight:750}.profile-menu button:hover{background:var(--surface2)!important}.settingsmodal{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;padding:20px;z-index:45}.settingsmodal.open{display:flex}.settingsbox{width:min(520px,100%);max-height:90vh;overflow:auto;background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:26px;box-shadow:0 25px 80px #0008}.settingshead{display:flex;align-items:center;gap:13px;margin-bottom:20px}.settingshead h2{margin:0}.settingshead p{margin:3px 0 0;color:var(--muted);font-size:13px}.profile-big{width:64px;height:64px;border-radius:50%;object-fit:cover;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:25px}.setting-row{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:15px 0;border-top:1px solid var(--border)}.setting-row strong{display:block}.setting-row small{display:block;color:var(--muted);margin-top:4px}.setting-row button{border:1px solid var(--border);background:var(--surface2);color:var(--text);border-radius:9px;padding:9px 12px;font-weight:800;cursor:pointer;white-space:nowrap}.danger{color:#ef4444!important;border-color:#ef444455!important}.settings-actions{display:flex;justify-content:flex-end;margin-top:18px}.settings-actions button{border:0;background:var(--surface2);color:var(--text);padding:10px 14px;border-radius:10px;font-weight:800;cursor:pointer}</style>
-<style>.socialmodal{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;padding:20px;z-index:44}.socialmodal.open{display:flex}.socialbox{width:min(850px,100%);height:min(680px,90vh);background:var(--surface);border:1px solid var(--border);border-radius:18px;overflow:hidden;display:flex;box-shadow:0 25px 80px #0008}.socialside{width:250px;background:var(--surface2);padding:18px;border-right:1px solid var(--border);overflow:auto}.socialside h2{margin:0 0 16px}.socialtab{width:100%;border:0;background:transparent;color:var(--muted);padding:11px 12px;text-align:left;border-radius:10px;font-weight:850;cursor:pointer;margin-bottom:5px}.socialtab.active,.socialtab:hover{background:var(--surface);color:var(--text)}.friendmini{display:flex;align-items:center;gap:9px;padding:9px;border-radius:10px;cursor:pointer}.friendmini:hover{background:var(--surface)}.dot{width:8px;height:8px;border-radius:50%;background:#22c55e;margin-left:auto}.socialmain{flex:1;display:flex;flex-direction:column;min-width:0}.socialhead{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}.socialhead h2{margin:0}.socialcontent{padding:20px;overflow:auto;flex:1}.socialrow{display:flex;align-items:center;gap:12px;padding:13px;border:1px solid var(--border);border-radius:12px;margin-bottom:10px}.socialavatar{width:42px;height:42px;border-radius:50%;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-weight:900;overflow:hidden;flex:none}.socialavatar img{width:100%;height:100%;object-fit:cover}.socialname{font-weight:850}.socialstatus{font-size:12px;color:var(--muted);margin-top:3px}.socialactions{margin-left:auto;display:flex;gap:7px}.socialactions button,.socialform button{border:0;background:var(--accent);color:#fff;padding:9px 12px;border-radius:9px;font-weight:850;cursor:pointer}.socialactions .secondary{background:var(--surface2);color:var(--text);border:1px solid var(--border)}.socialform{display:flex;gap:8px;margin-bottom:16px}.socialform input{flex:1;border:1px solid var(--border);border-radius:10px;background:var(--surface2);color:var(--text);padding:11px;outline:0}.activity-card{padding:15px;border:1px solid var(--border);border-radius:12px;margin-bottom:10px}.activity-card strong{display:block}.activity-card small{display:block;color:var(--muted);margin-top:5px}.chatmodal{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;padding:20px;z-index:50}.chatmodal.open{display:flex}.chatbox{width:min(620px,100%);height:min(650px,88vh);background:var(--surface);border:1px solid var(--border);border-radius:18px;display:flex;flex-direction:column;overflow:hidden}.chathead{padding:15px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}.chathead strong{flex:1}.chatmessages{flex:1;overflow:auto;padding:18px;background:var(--bg)}.bubble{max-width:75%;padding:10px 13px;border-radius:14px;margin-bottom:9px;background:var(--surface2);line-height:1.35}.bubble.me{margin-left:auto;background:var(--accent);color:#fff}.bubble small{display:block;opacity:.65;font-size:10px;margin-top:4px}.chatinput{display:flex;gap:8px;padding:12px;border-top:1px solid var(--border)}.chatinput input{flex:1;border:1px solid var(--border);border-radius:10px;background:var(--surface2);color:var(--text);padding:11px;outline:0}.chatinput button{border:0;background:var(--accent);color:#fff;border-radius:10px;padding:0 17px;font-weight:900;cursor:pointer}</style>
+<style>.socialmodal{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;padding:20px;z-index:44}.socialmodal.open{display:flex}.socialbox{width:min(850px,100%);height:min(680px,90vh);background:var(--surface);border:1px solid var(--border);border-radius:18px;overflow:hidden;display:flex;box-shadow:0 25px 80px #0008}.socialside{width:250px;background:var(--surface2);padding:18px;border-right:1px solid var(--border);overflow:auto}.socialside h2{margin:0 0 16px}.socialtab{width:100%;border:0;background:transparent;color:var(--muted);padding:11px 12px;text-align:left;border-radius:10px;font-weight:850;cursor:pointer;margin-bottom:5px}.socialtab.active,.socialtab:hover{background:var(--surface);color:var(--text)}.friendmini{display:flex;align-items:center;gap:9px;padding:9px;border-radius:10px;cursor:pointer}.friendmini:hover{background:var(--surface)}.dot{width:8px;height:8px;border-radius:50%;background:#facc15;margin-left:auto}.dot.playing{background:#22c55e}.statusline{display:flex;align-items:center;gap:6px}.statusdot{width:8px;height:8px;border-radius:50%;background:#facc15;display:inline-block}.statusdot.playing{background:#22c55e}.socialmain{flex:1;display:flex;flex-direction:column;min-width:0}.socialhead{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}.socialhead h2{margin:0}.socialcontent{padding:20px;overflow:auto;flex:1}.socialrow{display:flex;align-items:center;gap:12px;padding:13px;border:1px solid var(--border);border-radius:12px;margin-bottom:10px}.socialavatar{width:42px;height:42px;border-radius:50%;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-weight:900;overflow:hidden;flex:none}.socialavatar img{width:100%;height:100%;object-fit:cover}.socialname{font-weight:850}.socialstatus{font-size:12px;color:var(--muted);margin-top:3px}.socialactions{margin-left:auto;display:flex;gap:7px}.socialactions button,.socialform button{border:0;background:var(--accent);color:#fff;padding:9px 12px;border-radius:9px;font-weight:850;cursor:pointer}.socialactions .secondary{background:var(--surface2);color:var(--text);border:1px solid var(--border)}.socialform{display:flex;gap:8px;margin-bottom:16px}.socialform input{flex:1;border:1px solid var(--border);border-radius:10px;background:var(--surface2);color:var(--text);padding:11px;outline:0}.activity-card{padding:15px;border:1px solid var(--border);border-radius:12px;margin-bottom:10px}.activity-card strong{display:block}.activity-card small{display:block;color:var(--muted);margin-top:5px}.chatmodal{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;padding:20px;z-index:50}.chatmodal.open{display:flex}.chatbox{width:min(620px,100%);height:min(650px,88vh);background:var(--surface);border:1px solid var(--border);border-radius:18px;display:flex;flex-direction:column;overflow:hidden}.chathead{padding:15px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}.chathead strong{flex:1}.chatmessages{flex:1;overflow:auto;padding:18px;background:var(--bg)}.bubble{max-width:75%;padding:10px 13px;border-radius:14px;margin-bottom:9px;background:var(--surface2);line-height:1.35}.bubble.me{margin-left:auto;background:var(--accent);color:#fff}.bubble small{display:block;opacity:.65;font-size:10px;margin-top:4px}.chatinput{display:flex;gap:8px;padding:12px;border-top:1px solid var(--border)}.chatinput input{flex:1;border:1px solid var(--border);border-radius:10px;background:var(--surface2);color:var(--text);padding:11px;outline:0}.chatinput button{border:0;background:var(--accent);color:#fff;border-radius:10px;padding:0 17px;font-weight:900;cursor:pointer}</style>
 
 <style>
 /* PLAYBOX V2 */
@@ -320,14 +320,14 @@ async function getFriendRows(){
   const rows=data||[];
   const ids=[...new Set(rows.flatMap(r=>[r.requester_id,r.receiver_id]).filter(id=>id!==user.id))];
   if(!ids.length)return rows.map(r=>({...r,other:null,otherId:r.requester_id===user.id?r.receiver_id:r.requester_id}));
-  const {data:profiles,error:profileError}=await supabaseClient.from('profiles').select('id,username,avatar_url,current_game,last_played').in('id',ids);
+  const {data:profiles,error:profileError}=await supabaseClient.from('profiles').select('id,username,avatar_url,current_game,last_played,last_seen').in('id',ids);
   if(profileError){console.error('Friend profiles error:',profileError);return rows.map(r=>({...r,other:null,otherId:r.requester_id===user.id?r.receiver_id:r.requester_id}))}
   const map=Object.fromEntries((profiles||[]).map(p=>[p.id,p]));
   return rows.map(r=>({...r,otherId:r.requester_id===user.id?r.receiver_id:r.requester_id,other:map[r.requester_id===user.id?r.receiver_id:r.requester_id]||null}));
 }
 async function getFriends(){
   const rows=await getFriendRows();
-  return rows.filter(r=>r.status==='accepted'&&r.other).map(r=>({id:r.id,userId:r.otherId,name:r.other.username,avatar:r.other.avatar_url||'',playing:r.other.current_game||'',lastPlayed:r.other.last_played||''}));
+  return rows.filter(r=>r.status==='accepted'&&r.other).map(r=>({id:r.id,userId:r.otherId,name:r.other.username,avatar:r.other.avatar_url||'',playing:r.other.current_game||'',lastPlayed:r.other.last_played||'',lastSeen:r.other.last_seen||null}));
 }
 async function getRequests(){
   const user=await getSocialUser();
@@ -341,11 +341,22 @@ async function friendStatus(name){
 }
 function socialEscape(value){return String(value||'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;')}
 function socialJs(value){return String(value||'').replaceAll('\\','\\\\').replaceAll("'","\\'")}
+function presenceState(friend){
+  const seen=friend?.lastSeen?new Date(friend.lastSeen).getTime():0;
+  const online=seen>0 && (Date.now()-seen)<45000;
+  if(friend?.playing && online)return {online:true,playing:true,text:'Playing '+friend.playing};
+  if(online)return {online:true,playing:false,text:'Online'};
+  return {online:false,playing:false,text:'Offline'};
+}
+function statusHtml(friend){
+  const p=presenceState(friend);
+  return `<span class="statusline"><span class="statusdot ${p.playing?'playing':''}"></span>${socialEscape(p.text)}</span>`;
+}
 async function renderFriendMini(){
   let box=el('friendMiniList');
   if(!box)return;
   const friends=await getFriends();
-  box.innerHTML=friends.length?friends.slice(0,5).map(f=>`<div class="friendmini" onclick="openChat('${socialJs(f.name)}')"><div class="socialavatar" style="width:30px;height:30px;font-size:12px">${f.avatar?`<img src="${socialEscape(f.avatar)}" alt="">`:'👤'}</div><span style="font-size:13px;font-weight:800">${socialEscape(f.name)}</span>${f.playing?'<span class="dot"></span>':''}</div>`).join(''):'<small style="color:var(--muted)">No friends yet.</small>';
+  box.innerHTML=friends.length?friends.slice(0,5).map(f=>`<div class="friendmini" onclick="openChat('${socialJs(f.name)}')"><div class="socialavatar" style="width:30px;height:30px;font-size:12px">${f.avatar?`<img src="${socialEscape(f.avatar)}" alt="">`:'👤'}</div><span style="font-size:13px;font-weight:800">${socialEscape(f.name)}</span>${presenceState(f).online?`<span class="dot ${presenceState(f).playing?'playing':''}"></span>`:''}</div>`).join(''):'<small style="color:var(--muted)">No friends yet.</small>';
 }
 async function renderSocial(){
   if(!currentUser){el('socialContent').innerHTML='<div class="empty">Log in first to use Social.</div>';return}
@@ -392,10 +403,10 @@ async function renderSocial(){
   }
   const friends=await getFriends();
   if(socialTab==='activity'){
-    c.innerHTML=friends.length?friends.map(f=>`<div class="activity-card"><strong>${socialEscape(f.name)}</strong><small>${f.playing?`🟢 Playing ${socialEscape(f.playing)}`:'⚪ Offline'}</small>${f.playing?`<div class="socialactions" style="margin-top:10px"><button onclick="openGame('${socialJs(f.playing)}')">Join Game</button><button class="secondary" onclick="openChat('${socialJs(f.name)}')">Chat</button></div>`:''}${f.lastPlayed?`<small>Last played: ${socialEscape(f.lastPlayed)}</small>`:''}</div>`).join(''):'<div class="empty">Add friends to see what they are playing.</div>';
+    c.innerHTML=friends.length?friends.map(f=>`<div class="activity-card"><strong>${socialEscape(f.name)}</strong><small>${statusHtml(f)}</small>${f.playing?`<div class="socialactions" style="margin-top:10px"><button onclick="openGame('${socialJs(f.playing)}')">Join Game</button><button class="secondary" onclick="openChat('${socialJs(f.name)}')">Chat</button></div>`:''}${f.lastPlayed?`<small>Last played: ${socialEscape(f.lastPlayed)}</small>`:''}</div>`).join(''):'<div class="empty">Add friends to see what they are playing.</div>';
     return;
   }
-  c.innerHTML=friends.length?friends.map(f=>`<div class="socialrow"><div class="socialavatar">${f.avatar?`<img src="${socialEscape(f.avatar)}" alt="">`:'👤'}</div><div><div class="socialname">${socialEscape(f.name)}</div><div class="socialstatus">${f.playing?`🟢 Playing ${socialEscape(f.playing)}`:'⚪ Offline'}</div></div><div class="socialactions">${f.playing?`<button onclick="openGame('${socialJs(f.playing)}')">Join</button>`:''}<button class="secondary" onclick="openChat('${socialJs(f.name)}')">Chat</button><button class="secondary" onclick="removeFriend('${socialJs(f.id)}')">Remove</button></div></div>`).join(''):'<div class="empty">No friends yet.<br>Use “Add Friend” to find someone.</div>';
+  c.innerHTML=friends.length?friends.map(f=>`<div class="socialrow"><div class="socialavatar">${f.avatar?`<img src="${socialEscape(f.avatar)}" alt="">`:'👤'}</div><div><div class="socialname">${socialEscape(f.name)}</div><div class="socialstatus">${statusHtml(f)}</div></div><div class="socialactions">${f.playing?`<button onclick="openGame('${socialJs(f.playing)}')">Join</button>`:''}<button class="secondary" onclick="openChat('${socialJs(f.name)}')">Chat</button><button class="secondary" onclick="removeFriend('${socialJs(f.id)}')">Remove</button></div></div>`).join(''):'<div class="empty">No friends yet.<br>Use “Add Friend” to find someone.</div>';
 }
 async function acceptFriend(id){
   const user=await getSocialUser();
@@ -504,10 +515,16 @@ async function updateFriendActivity(){
   if(!currentUser)return;
   const user=await getSocialUser();
   if(!user)return;
-  const payload={current_game:activeGame||null};
+  const payload={current_game:activeGame||null,last_seen:new Date().toISOString()};
   if(activeGame)payload.last_played=activeGame;
   const {error}=await supabaseClient.from('profiles').update(payload).eq('id',user.id);
   if(error)console.error('Friend activity update error:',error);
+}
+let presenceHeartbeat=null;
+function startPresenceHeartbeat(){
+  if(presenceHeartbeat)clearInterval(presenceHeartbeat);
+  updateFriendActivity();
+  presenceHeartbeat=setInterval(updateFriendActivity,15000);
 }
 
 function updateAuth(){
@@ -551,6 +568,8 @@ function updateAuth(){
     };
 
     el('menuLogout').onclick=async ()=>{
+      if(presenceHeartbeat)clearInterval(presenceHeartbeat);
+      presenceHeartbeat=null;
       await supabaseClient.auth.signOut();
       currentUser='';
       favoritesCache=[];
@@ -646,6 +665,7 @@ el('authForm').onsubmit = async e => {
         updateAuth();
         renderContinue();
         loadFavorites();
+        startPresenceHeartbeat();
       }
 
     } else {
@@ -668,6 +688,7 @@ el('authForm').onsubmit = async e => {
       updateAuth();
       renderContinue();
       loadFavorites();
+      startPresenceHeartbeat();
     }
 
   } catch (error) {
@@ -768,9 +789,9 @@ async function restoreSession(){
     currentUser=profile?.username||localStorage.getItem('playboxUser')||email.split('@')[0].slice(0,24);
     localStorage.setItem('playboxUserEmail',email);
     if(profile?.username)localStorage.setItem('playboxUser',profile.username);
-    updateAuth();renderContinue();loadFavorites();
+    updateAuth();renderContinue();loadFavorites();startPresenceHeartbeat();
   }else{
-    currentUser='';favoritesCache=[];updateAuth();renderContinue();
+    currentUser='';favoritesCache=[];if(presenceHeartbeat)clearInterval(presenceHeartbeat);presenceHeartbeat=null;updateAuth();renderContinue();
   }
 }
 
