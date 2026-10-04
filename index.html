@@ -19,12 +19,10 @@ header{height:76px;background:var(--surface);border-bottom:1px solid var(--borde
 .gamearea:fullscreen{width:100vw;height:100vh;min-height:0}
 .gamearea:fullscreen iframe{width:100%;height:100%}
 @media(max-width:750px){.modal{padding:10px}.modalbox{width:100%}.gamearea{height:55vh;min-height:300px}}
-
-.gameSubmitModal{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;padding:20px;z-index:50}.gameSubmitModal.open{display:flex}.gameSubmitBox{width:min(460px,100%);background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:28px;box-shadow:0 25px 80px #0008;text-align:center}.gameSubmitBox h2{margin:0 0 8px;font-size:22px}.gameSubmitBox p{margin:0;color:var(--muted);font-size:14px;line-height:1.6}.gameSubmitIcon{font-size:42px;margin-bottom:10px}.gameSubmitClose{margin-top:20px;border:0;border-radius:10px;padding:11px 18px;background:var(--accent);color:#fff;font-weight:900;cursor:pointer}.gameSubmitClose:hover{filter:brightness(1.05)}
 </style>
 <style>.thumb img{width:auto;height:auto;max-width:100%;max-height:100%;object-fit:contain}</style>
 <style>.profile-wrap{position:relative}.profile-btn{display:flex!important;align-items:center;gap:9px}.avatar{width:30px;height:30px;border-radius:50%;object-fit:cover;background:var(--surface2);display:inline-flex;align-items:center;justify-content:center;font-size:14px}.profile-menu{position:absolute;right:0;top:48px;width:210px;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:7px;box-shadow:0 18px 50px #0005;display:none;z-index:20}.profile-menu.open{display:block}.profile-menu button{width:100%;text-align:left;border:0;background:transparent!important;color:var(--text)!important;padding:11px 12px;border-radius:9px;font-weight:750}.profile-menu button:hover{background:var(--surface2)!important}.settingsmodal{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;padding:20px;z-index:45}.settingsmodal.open{display:flex}.settingsbox{width:min(520px,100%);max-height:90vh;overflow:auto;background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:26px;box-shadow:0 25px 80px #0008}.settingshead{display:flex;align-items:center;gap:13px;margin-bottom:20px}.settingshead h2{margin:0}.settingshead p{margin:3px 0 0;color:var(--muted);font-size:13px}.profile-big{width:64px;height:64px;border-radius:50%;object-fit:cover;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:25px}.setting-row{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:15px 0;border-top:1px solid var(--border)}.setting-row strong{display:block}.setting-row small{display:block;color:var(--muted);margin-top:4px}.setting-row button{border:1px solid var(--border);background:var(--surface2);color:var(--text);border-radius:9px;padding:9px 12px;font-weight:800;cursor:pointer;white-space:nowrap}.danger{color:#ef4444!important;border-color:#ef444455!important}.settings-actions{display:flex;justify-content:flex-end;margin-top:18px}.settings-actions button{border:0;background:var(--surface2);color:var(--text);padding:10px 14px;border-radius:10px;font-weight:800;cursor:pointer}</style>
-<style>.socialmodal{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;padding:20px;z-index:44}.socialmodal.open{display:flex}.socialbox{width:min(850px,100%);height:min(680px,90vh);background:var(--surface);border:1px solid var(--border);border-radius:18px;overflow:hidden;display:flex;box-shadow:0 25px 80px #0008}.socialside{width:250px;background:var(--surface2);padding:18px;border-right:1px solid var(--border);overflow:auto}.socialside h2{margin:0 0 16px}.socialtab{width:100%;border:0;background:transparent;color:var(--muted);padding:11px 12px;text-align:left;border-radius:10px;font-weight:850;cursor:pointer;margin-bottom:5px}.socialtab.active,.socialtab:hover{background:var(--surface);color:var(--text)}.friendmini{display:flex;align-items:center;gap:9px;padding:9px;border-radius:10px;cursor:pointer}.friendmini:hover{background:var(--surface)}.dot{width:8px;height:8px;border-radius:50%;background:#facc15;margin-left:auto}.dot.playing{background:#22c55e}.statusline{display:flex;align-items:center;gap:6px}.statusdot{width:8px;height:8px;border-radius:50%;background:#facc15;display:inline-block}.statusdot.playing{background:#22c55e}.socialmain{flex:1;display:flex;flex-direction:column;min-width:0}.socialhead{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}.socialhead h2{margin:0}.socialcontent{padding:20px;overflow:auto;flex:1}.socialrow{display:flex;align-items:center;gap:12px;padding:13px;border:1px solid var(--border);border-radius:12px;margin-bottom:10px}.socialavatar{width:42px;height:42px;border-radius:50%;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-weight:900;overflow:hidden;flex:none}.socialavatar img{width:100%;height:100%;object-fit:cover}.socialname{font-weight:850}.socialstatus{font-size:12px;color:var(--muted);margin-top:3px}.socialactions{margin-left:auto;display:flex;gap:7px}.socialactions button,.socialform button{border:0;background:var(--accent);color:#fff;padding:9px 12px;border-radius:9px;font-weight:850;cursor:pointer}.socialactions .secondary{background:var(--surface2);color:var(--text);border:1px solid var(--border)}.socialform{display:flex;gap:8px;margin-bottom:16px}.socialform input{flex:1;border:1px solid var(--border);border-radius:10px;background:var(--surface2);color:var(--text);padding:11px;outline:0}.activity-card{padding:15px;border:1px solid var(--border);border-radius:12px;margin-bottom:10px}.activity-card strong{display:block}.activity-card small{display:block;color:var(--muted);margin-top:5px}.chatmodal{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;padding:20px;z-index:50}.chatmodal.open{display:flex}.chatbox{width:min(620px,100%);height:min(650px,88vh);background:var(--surface);border:1px solid var(--border);border-radius:18px;display:flex;flex-direction:column;overflow:hidden}.chathead{padding:15px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}.chathead strong{flex:1}.chatmessages{flex:1;overflow:auto;padding:18px;background:var(--bg)}.chattyping{min-height:18px;padding:0 14px 4px;color:var(--muted);font-size:12px;font-style:italic}.chattyping:empty{display:none}.bubble{max-width:75%;padding:10px 13px;border-radius:14px;margin-bottom:9px;background:var(--surface2);line-height:1.35}.bubble.me{margin-left:auto;background:var(--accent);color:#fff}.bubble small{display:block;opacity:.65;font-size:10px;margin-top:4px}.message-status{display:block;text-align:right;opacity:.75;font-size:10px;margin-top:2px}.chatinput{display:flex;gap:8px;padding:12px;border-top:1px solid var(--border)}.chatinput input{flex:1;border:1px solid var(--border);border-radius:10px;background:var(--surface2);color:var(--text);padding:11px;outline:0}.chatinput button{border:0;background:var(--accent);color:#fff;border-radius:10px;padding:0 17px;font-weight:900;cursor:pointer}</style>
+<style>.socialmodal{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;padding:20px;z-index:44}.socialmodal.open{display:flex}.socialbox{width:min(850px,100%);height:min(680px,90vh);background:var(--surface);border:1px solid var(--border);border-radius:18px;overflow:hidden;display:flex;box-shadow:0 25px 80px #0008}.socialside{width:250px;background:var(--surface2);padding:18px;border-right:1px solid var(--border);overflow:auto}.socialside h2{margin:0 0 16px}.socialtab{width:100%;border:0;background:transparent;color:var(--muted);padding:11px 12px;text-align:left;border-radius:10px;font-weight:850;cursor:pointer;margin-bottom:5px}.socialtab.active,.socialtab:hover{background:var(--surface);color:var(--text)}.friendmini{display:flex;align-items:center;gap:9px;padding:9px;border-radius:10px;cursor:pointer}.friendmini:hover{background:var(--surface)}.dot{width:8px;height:8px;border-radius:50%;background:#facc15;margin-left:auto}.dot.playing{background:#22c55e}.statusline{display:flex;align-items:center;gap:6px}.statusdot{width:8px;height:8px;border-radius:50%;background:#facc15;display:inline-block}.statusdot.playing{background:#22c55e}.socialmain{flex:1;display:flex;flex-direction:column;min-width:0}.socialhead{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}.socialhead h2{margin:0}.socialcontent{padding:20px;overflow:auto;flex:1}.socialrow{display:flex;align-items:center;gap:12px;padding:13px;border:1px solid var(--border);border-radius:12px;margin-bottom:10px}.socialavatar{width:42px;height:42px;border-radius:50%;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-weight:900;overflow:hidden;flex:none}.socialavatar img{width:100%;height:100%;object-fit:cover}.socialname{font-weight:850}.socialstatus{font-size:12px;color:var(--muted);margin-top:3px}.socialactions{margin-left:auto;display:flex;gap:7px}.socialactions button,.socialform button{border:0;background:var(--accent);color:#fff;padding:9px 12px;border-radius:9px;font-weight:850;cursor:pointer}.socialactions .secondary{background:var(--surface2);color:var(--text);border:1px solid var(--border)}.socialform{display:flex;gap:8px;margin-bottom:16px}.socialform input{flex:1;border:1px solid var(--border);border-radius:10px;background:var(--surface2);color:var(--text);padding:11px;outline:0}.activity-card{padding:15px;border:1px solid var(--border);border-radius:12px;margin-bottom:10px}.activity-card strong{display:block}.activity-card small{display:block;color:var(--muted);margin-top:5px}.chatmodal{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;padding:20px;z-index:50}.chatmodal.open{display:flex}.chatbox{width:min(620px,100%);height:min(650px,88vh);background:var(--surface);border:1px solid var(--border);border-radius:18px;display:flex;flex-direction:column;overflow:hidden}.chathead{padding:15px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}.chathead strong{flex:1}.chatmessages{flex:1;overflow:auto;padding:18px;background:var(--bg)}.bubble{max-width:75%;padding:10px 13px;border-radius:14px;margin-bottom:9px;background:var(--surface2);line-height:1.35}.bubble.me{margin-left:auto;background:var(--accent);color:#fff}.bubble small{display:block;opacity:.65;font-size:10px;margin-top:4px}.chatinput{display:flex;gap:8px;padding:12px;border-top:1px solid var(--border)}.chatinput input{flex:1;border:1px solid var(--border);border-radius:10px;background:var(--surface2);color:var(--text);padding:11px;outline:0}.chatinput button{border:0;background:var(--accent);color:#fff;border-radius:10px;padding:0 17px;font-weight:900;cursor:pointer}</style>
 
 <style>
 /* PLAYBOX V2 */
@@ -57,36 +55,20 @@ const supabaseClient = supabase.createClient(
 <div class="authmodal" id="authModal"><div class="authbox"><h2 id="authTitle">Log In</h2><p id="authSubtitle">Log in to continue playing and save your games.</p><form id="authForm"><label for="authUsername" id="authUsernameLabel" style="display:none">Username</label><input id="authUsername" type="text" placeholder="Choose a username" autocomplete="username" style="display:none"><label for="authEmail">Gmail</label><input id="authEmail" type="email" placeholder="you@gmail.com" autocomplete="email" required><label for="authPassword">Password</label><input id="authPassword" type="password" placeholder="Enter your password" autocomplete="current-password" required><div class="autherror" id="authError"></div><div class="authactions"><button type="button" class="authcancel" id="authCancel">Cancel</button><button type="submit" class="authsubmit" id="authSubmit">Log In</button></div></form></div></div>
 <div class="settingsmodal" id="settingsModal"><div class="settingsbox"><div class="settingshead"><div class="profile-big" id="profileBig">👤</div><div><h2>Profile & Settings</h2><p id="profileEmail"></p></div></div><div class="setting-row"><div><strong>Profile picture</strong><small>Choose a picture from your device.</small></div><button id="changePic">Change</button><input id="picInput" type="file" accept="image/*" hidden></div><div class="setting-row"><div><strong>Change password</strong><small>Update your current password.</small></div><button id="changePassword">Change</button></div><div class="setting-row"><div><strong>Reset password</strong><small>Set a new password for this account.</small></div><button id="resetPassword">Reset</button></div><div class="setting-row"><div><strong>Change email</strong><small>Move your account to another Gmail address.</small></div><button id="changeEmail">Change</button></div><div class="setting-row"><div><strong>Delete account</strong><small>This removes your saved account and played-game history.</small></div><button class="danger" id="deleteAccount">Delete</button></div><div class="settings-actions"><button id="settingsClose">Close</button></div></div></div>
 <div class="profilemodal" id="profileModal"><div class="profilebox"><div class="profilehero"><div class="profile-big" id="publicProfileAvatar">👤</div><div style="flex:1"><h2 id="publicProfileName">Player</h2><p id="publicProfileEmail"></p></div><button class="close" id="profileClose">Close</button></div><div class="quickstats"><div class="stat"><strong id="statPlayed">0</strong><small>Games played</small></div><div class="stat"><strong id="statTime">0m</strong><small>Total playtime</small></div><div class="stat"><strong id="statFavs">0</strong><small>Favorites</small></div><div class="stat"><strong id="statAch">0</strong><small>Achievements</small></div></div><div class="section-title"><h2>🏆 Achievements</h2></div><div class="profilegrid" id="achievementsGrid"></div></div></div><div class="socialmodal" id="socialModal"><div class="socialbox"><aside class="socialside"><h2>👤 Social</h2><button class="socialtab active" data-social="friends">Friends</button><button class="socialtab" data-social="requests">Requests</button><button class="socialtab" data-social="add">Add Friend</button><button class="socialtab" data-social="activity">Join / Activity</button><div id="friendMiniList" style="margin-top:18px"></div></aside><section class="socialmain"><div class="socialhead"><h2 id="socialTitle">Friends</h2><button class="close" id="socialClose">Close</button></div><div class="socialcontent" id="socialContent"></div></section></div></div>
-<div class="chatmodal" id="chatModal"><div class="chatbox"><div class="chathead"><div class="socialavatar" id="chatAvatar">👤</div><strong id="chatTitle">Chat</strong><button class="close" id="chatClose">Close</button></div><div class="chatmessages" id="chatMessages"></div><div class="chattyping" id="chatTyping"></div><form class="chatinput" id="chatForm"><input id="chatInput" placeholder="Type a message..." autocomplete="off"><button>Send</button></form></div></div>
+<div class="chatmodal" id="chatModal"><div class="chatbox"><div class="chathead"><div class="socialavatar" id="chatAvatar">👤</div><strong id="chatTitle">Chat</strong><button class="close" id="chatClose">Close</button></div><div class="chatmessages" id="chatMessages"></div><form class="chatinput" id="chatForm"><input id="chatInput" placeholder="Type a message..." autocomplete="off"><button>Send</button></form></div></div>
 <script>
 const gameData=[
 ['Venge.io','🔫',['action','io','multiplayer'],'Popular','#ef6b5f','FPS • .io • Multiplayer','https://venge.io/'],
 ['Taming.io','🐺',['io','multiplayer'],'Popular','#65b7f3','Survival • .io','https://taming.io/'],
-['Smash Karts','🏎️',['action','multiplayer','arcade'],'Hot','#ffd166','Racing • Multiplayer','https://smashkarts.io/'],
 ['Shell Shockers','🥚',['action','io','multiplayer'],'Popular','#7bc96f','FPS • .io','https://shellshock.io/'],
-['1v1.LOL','🏗️',['action','io','multiplayer'],'','#a78bfa','Shooter • Building','https://1v1.lol/'],
-['Drift Hunters','🚘',['arcade'],'','#f97316','Racing • Cars','https://drifthunters.io/'],
-['Moto X3M','🏍️',['arcade'],'','#38bdf8','Stunts • Racing','https://poki.com/en/g/moto-x3m'],
-['Fireboy & Watergirl','🔥',['arcade','multiplayer'],'','#fb7185','Puzzle • Co-op','https://poki.com/en/g/fireboy-and-watergirl-forest-temple'],
-['Basketball Stars','🏀',['arcade','multiplayer'],'','#f59e0b','Sports • Multiplayer','https://poki.com/en/g/basketball-stars'],
-['Stickman Hook','🪝',['arcade','new'],'New','#22c55e','Arcade • Skill','https://poki.com/en/g/stickman-hook'],
 ['Zombs Royale','🧟',['action','io','multiplayer'],'','#64748b','Battle Royale • .io','https://zombsroyale.io/'],
-['Agar.io','🔵',['io','multiplayer'],'Classic','#60a5fa','IO • Multiplayer','https://agar.io/'],
-['Slither.io','🐍',['io','multiplayer'],'Popular','#84cc16','IO • Multiplayer','https://slither.io/'],
 ['Krunker','🎯',['action','io','multiplayer'],'Popular','#f97316','FPS • Multiplayer','https://krunker.io/'],
-['Diep.io','🛡️',['action','io','multiplayer'],'Classic','#60a5fa','Tank • .io','https://diep.io/'],
-['Hole.io','🕳️',['io','arcade'],'Hot','#8b5cf6','Arcade • .io','https://poki.com/en/g/hole-io'],
-['Paper.io 2','📄',['io','arcade'],'','#38bdf8','Territory • .io','https://poki.com/en/g/paper-io-2'],
 ['Surviv.io','🪖',['action','io','multiplayer'],'','#64748b','Battle Royale • .io','https://surviv.io/'],
 ['Little Big Snake','🐍',['io','multiplayer'],'','#22c55e','Snake • Multiplayer','https://littlebigsnake.com/'],
-['EvoWorld.io','🦅',['io','multiplayer'],'','#14b8a6','Evolution • .io','https://evoworld.io/'],
-['FlyOrDie.io','🦅',['io','multiplayer'],'','#06b6d4','Animals • .io','https://flyordie.io/'],
 ['Mope.io','🐭',['io','multiplayer'],'','#f59e0b','Animals • .io','https://mope.io/'],
 ['WormsZone.io','🪱',['io','multiplayer'],'','#84cc16','Snake • .io','https://worms.zone/'],
-['Paper.io','🟦',['io','multiplayer'],'','#3b82f6','Territory • .io','https://paper-io.com/'],
 ['Starve.io','🍖',['io','multiplayer'],'','#ef4444','Survival • .io','https://starve.io/'],
 ['BrutalMania.io','⚔️',['action','io','multiplayer'],'','#dc2626','Fighting • .io','https://brutalmania.io/'],
-['Repuls.io','🚀',['action','io','multiplayer'],'','#7c3aed','FPS • .io','https://repuls.io/'],
 ['Vectaria.io','🏝️',['io','multiplayer'],'','#0ea5e9','Survival • .io','https://vectaria.io/'],
 ['Cryzen.io','🔫',['action','io','multiplayer'],'','#64748b','FPS • .io','https://cryzen.io/'],
 ['Deadshot.io','🎯',['action','io','multiplayer'],'','#ef4444','FPS • .io','https://deadshot.io/'],
@@ -95,94 +77,18 @@ const gameData=[
 ['Survev.io','🪖',['action','io','multiplayer'],'','#0f766e','Battle Royale • .io','https://survev.io/'],
 ['Zombs.io','🧟',['action','io','multiplayer'],'','#475569','Survival • .io','https://zombs.io/'],
 ['MooMoo.io','🐮',['io','multiplayer'],'','#eab308','Survival • .io','https://moomoo.io/'],
-['Tanki Online','🛡️',['action','multiplayer'],'','#16a34a','Tank • Multiplayer','https://tankionline.com/'],
 ['Bloxd.io','🧱',['io','multiplayer'],'','#a3a3a3','Building • .io','https://bloxd.io/'],
 ['Minecraft Classic','⛏️',['arcade','multiplayer'],'Classic','#65a30d','Sandbox • Multiplayer','https://classic.minecraft.net/'],
-['Drift Boss','🏁',['arcade'],'Hot','#ef4444','Racing • Skill','https://poki.com/en/g/drift-boss'],
-['Drive Mad','🚗',['arcade'],'Popular','#f97316','Driving • Skill','https://poki.com/en/g/drive-mad'],
-['Level Devil','😈',['arcade','new'],'Hot','#111827','Platform • Challenge','https://poki.com/en/g/level-devil'],
-['Subway Surfers','🚇',['arcade'],'Popular','#0ea5e9','Running • Arcade','https://poki.com/en/g/subway-surfers'],
-['Temple Run 2','🏃',['arcade'],'','#d97706','Running • Arcade','https://poki.com/en/g/temple-run-2'],
-['Crossy Road','🐔',['arcade'],'','#facc15','Arcade • Skill','https://poki.com/en/g/crossy-road'],
-['Red Ball 4','🔴',['arcade'],'','#ef4444','Platform • Arcade','https://poki.com/en/g/red-ball-4'],
-['Geometry Dash','🔺',['arcade'],'Classic','#22c55e','Rhythm • Skill','https://poki.com/en/g/geometry-dash-subzero'],
-['The Impossible Quiz','❓',['arcade'],'','#a855f7','Quiz • Challenge','https://poki.com/en/g/the-impossible-quiz'],
-['2048','🔢',['arcade'],'Classic','#f59e0b','Puzzle • Classic','https://play2048.co/'],
 ['Flappy Bird','🐦',['arcade'],'Classic','#38bdf8','Skill • Classic','https://flappybird.io/'],
-['Tomb of the Mask','🗿',['arcade'],'','#f59e0b','Arcade • Skill','https://poki.com/en/g/tomb-of-the-mask-neon'],
-['Stickman Battle','🤺',['action','arcade'],'','#94a3b8','Fighting • Stickman','https://poki.com/en/g/stickman-battle-fighting'],
-['Stickman Hook 2','🪝',['arcade','new'],'New','#16a34a','Arcade • Skill','https://poki.com/en/g/stickman-hook'],
-['Ragdoll Hit','🥊',['action','arcade'],'','#f97316','Fighting • Physics','https://poki.com/en/g/ragdoll-hit'],
-['Ragdoll Archers','🏹',['action','arcade'],'','#7c3aed','Action • Physics','https://poki.com/en/g/ragdoll-archers'],
-['Action King: Draw Fight','🥋',['action','arcade'],'','#ef4444','Fighting • Drawing','https://poki.com/en/g/action-king-draw-fight'],
-['Stickman Hook Race','🏃',['arcade'],'','#06b6d4','Racing • Skill','https://poki.com/en/g/stickman-hook'],
-['Basket Random','🏀',['arcade','multiplayer'],'Hot','#f59e0b','Sports • 2 Player','https://poki.com/en/g/basket-random'],
-['Soccer Random','⚽',['arcade','multiplayer'],'','#22c55e','Sports • 2 Player','https://poki.com/en/g/soccer-random'],
-['Tennis Masters','🎾',['arcade','multiplayer'],'','#16a34a','Sports • 2 Player','https://poki.com/en/g/tennis-masters'],
-['Table Tennis World Tour','🏓',['arcade'],'','#0ea5e9','Sports • Skill','https://poki.com/en/g/table-tennis-world-tour'],
-['Football Masters','⚽',['arcade','multiplayer'],'','#22c55e','Sports • Multiplayer','https://poki.com/en/g/football-masters'],
-['Head Soccer 2024','⚽',['arcade','multiplayer'],'','#3b82f6','Sports • Multiplayer','https://poki.com/en/g/head-soccer-2024'],
-['Master Chess','♟️',['arcade','multiplayer'],'','#64748b','Board • Multiplayer','https://poki.com/en/g/master-chess'],
-['4 in a Row Mania','🟡',['arcade','multiplayer'],'','#f59e0b','Board • 2 Player','https://poki.com/en/g/4-in-a-row-mania'],
-['Fireboy & Watergirl 2','🔥',['arcade','multiplayer'],'','#ef4444','Puzzle • Co-op','https://poki.com/en/g/fireboy-and-watergirl-forest-temple'],
-['Fireboy & Watergirl 3','💧',['arcade','multiplayer'],'','#3b82f6','Puzzle • Co-op','https://poki.com/en/g/fireboy-and-watergirl-forest-temple'],
-['Fireboy & Watergirl 4','🔥',['arcade','multiplayer'],'','#f97316','Puzzle • Co-op','https://poki.com/en/g/fireboy-and-watergirl-forest-temple'],
-['Fireboy & Watergirl 5','💎',['arcade','multiplayer'],'','#8b5cf6','Puzzle • Co-op','https://poki.com/en/g/fireboy-and-watergirl-forest-temple'],
-['Vex 3','🕺',['arcade'],'Classic','#64748b','Platform • Skill','https://poki.com/en/g/vex-3'],
-['Vex 4','🕺',['arcade'],'','#475569','Platform • Skill','https://poki.com/en/g/vex-4'],
-['Vex 5','🕺',['arcade'],'','#334155','Platform • Skill','https://poki.com/en/g/vex-5'],
-['Vex 6','🕺',['arcade'],'','#1e293b','Platform • Skill','https://poki.com/en/g/vex-6'],
-['Vex 7','🕺',['arcade','new'],'New','#0f172a','Platform • Skill','https://poki.com/en/g/vex-7'],
-['Bob The Robber','🥷',['arcade'],'','#475569','Stealth • Puzzle','https://poki.com/en/g/bob-the-robber'],
-['Action King','👊',['action','arcade'],'','#dc2626','Action • Fighting','https://poki.com/en/g/action-king'],
 ['Narrow One','🏹',['action','multiplayer'],'','#16a34a','Archery • Multiplayer','https://narrow.one/'],
-['Shell Shockers 2','🥚',['action','io','multiplayer'],'','#65a30d','FPS • Multiplayer','https://shellshock.io/'],
-['Krunker.io','🎯',['action','io','multiplayer'],'','#f97316','FPS • .io','https://krunker.io/'],
 ['Mini Royale: Nations','💣',['action','multiplayer'],'','#2563eb','FPS • Multiplayer','https://miniroyale.io/'],
-['Bullet Force','🔫',['action','multiplayer'],'','#475569','FPS • Multiplayer','https://poki.com/en/g/bullet-force-multiplayer'],
-['Combat Reloaded','🔫',['action','multiplayer'],'','#dc2626','FPS • Multiplayer','https://poki.com/en/g/combat-reloaded'],
-['Masked Forces','🎭',['action','multiplayer'],'','#0f766e','FPS • Multiplayer','https://poki.com/en/g/masked-forces'],
-['Stick Merge','🔫',['action','arcade'],'','#22c55e','Action • Stickman','https://poki.com/en/g/stick-merge'],
-['Stickman Parkour Master','🤸',['arcade'],'','#06b6d4','Parkour • Skill','https://poki.com/en/g/stickman-parkour-master'],
-['Getaway Shootout','🏃',['action','multiplayer'],'','#f97316','Action • 2 Player','https://poki.com/en/g/getaway-shootout'],
-['House of Hazards','🏠',['arcade','multiplayer'],'','#f59e0b','Party • 2 Player','https://poki.com/en/g/house-of-hazards'],
-['Tag','🏃',['arcade','multiplayer'],'','#8b5cf6','Party • Multiplayer','https://poki.com/en/g/tag'],
-['Hide and Seek','🙈',['arcade','multiplayer'],'','#64748b','Party • Multiplayer','https://poki.com/en/g/hide-and-seek'],
-['Monkey Mart','🐒',['arcade'],'Popular','#f59e0b','Tycoon • Casual','https://poki.com/en/g/monkey-mart'],
-['My Perfect Hotel','🏨',['arcade'],'','#0ea5e9','Tycoon • Casual','https://poki.com/en/g/my-perfect-hotel'],
-['Papa’s Pizzeria','🍕',['arcade'],'Classic','#ef4444','Cooking • Casual','https://poki.com/en/g/papas-pizzeria'],
-['Papa’s Freezeria','🍦',['arcade'],'','#38bdf8','Cooking • Casual','https://poki.com/en/g/papas-freezeria'],
-['Papa’s Burgeria','🍔',['arcade'],'','#f97316','Cooking • Casual','https://poki.com/en/g/papas-burgeria'],
-['Sushi Party','🍣',['io','multiplayer'],'','#f43f5e','IO • Multiplayer','https://poki.com/en/g/sushi-party'],
-['Nugget Man','🍗',['arcade'],'','#eab308','Arcade • Skill','https://poki.com/en/g/nugget-man'],
-['Action Games','⚔️',['action'],'','#ef4444','Action • Arcade','https://poki.com/en/action'],
-['Blumgi Bloom','🌸',['arcade'],'New','#ec4899','Platform • Skill','https://poki.com/en/g/blumgi-bloom'],
-['Blumgi Slime','🟢',['arcade','multiplayer'],'','#22c55e','Platform • Co-op','https://poki.com/en/g/blumgi-slime'],
-['Blumgi Castle','🏰',['arcade'],'','#8b5cf6','Platform • Skill','https://poki.com/en/g/blumgi-castle'],
-['Drive Beyond Horizons','🚙',['arcade'],'New','#f97316','Driving • 3D','https://poki.com/en/g/drive-beyond-horizons'],
-['Highway Traffic','🚦',['arcade'],'','#0ea5e9','Racing • Driving','https://poki.com/en/g/highway-traffic'],
-['Real City Driver','🚘',['arcade'],'','#64748b','Driving • 3D','https://poki.com/en/g/real-city-driver'],
-['NSR Street Car Racing','🏎️',['arcade'],'Popular','#dc2626','Racing • Cars','https://poki.com/en/g/nsr-street-car-racing'],
-['Stunt Bike Extreme','🏍️',['arcade'],'','#f59e0b','Bike • Stunts','https://poki.com/en/g/stunt-bike-extreme'],
-['Hills of Steel','🚙',['arcade'],'','#84cc16','Driving • Physics','https://poki.com/en/g/hills-of-steel'],
-['Tank Trouble','🛡️',['action','multiplayer'],'Classic','#16a34a','Tank • 2 Player','https://poki.com/en/g/tank-trouble'],
-['Fireboy and Watergirl','🔥',['arcade','multiplayer'],'','#ef4444','Puzzle • Co-op','https://poki.com/en/g/fireboy-and-watergirl-forest-temple'],
-['Action Games 2','⚡',['action'],'','#7c3aed','Action • Arcade','https://poki.com/en/action'],
-['Gold Digger FRVR','⛏️',['arcade'],'','#eab308','Mining • Skill','https://poki.com/en/g/gold-digger-frvr'],
-['Ninja Hands','🥷',['action','arcade'],'','#111827','Action • Skill','https://poki.com/en/g/ninja-hands'],
-['Parkour Race','🏃',['arcade','multiplayer'],'','#06b6d4','Running • Racing','https://poki.com/en/g/parkour-race'],
-['Crowd City','👥',['arcade','multiplayer'],'','#8b5cf6','Arcade • Multiplayer','https://poki.com/en/g/crowd-city'],
-['City Car Driving','🚗',['arcade'],'','#3b82f6','Driving • Cars','https://poki.com/en/g/city-car-driving'],
-['Rally Point 4','🏁',['arcade'],'','#ef4444','Racing • Cars','https://poki.com/en/g/rally-point-4'],
-['Pixel Gun 3D','🔫',['action','multiplayer'],'','#2563eb','FPS • Multiplayer','https://pixelgun3d.com/'],
 ['Doomed.io','💀',['action','io','multiplayer'],'','#475569','Survival • .io','https://doomed.io/'],
 ['MiniGiants.io','🧌',['io','multiplayer'],'','#a855f7','Battle • .io','https://minigiants.io/'],
 ['Brutal.io','🚗',['io','multiplayer'],'','#ef4444','Action • .io','https://brutal.io/'],
 ['Nend.io','🏙️',['io','multiplayer'],'','#0ea5e9','Survival • .io','https://nend.io/'],
 ['Gats.io','🔫',['action','io','multiplayer'],'','#64748b','Shooter • .io','https://gats.io/'],
 ['Kirka.io','⛏️',['action','io','multiplayer'],'','#22c55e','FPS • .io','https://kirka.io/'],
-['MiniGiants','🧌',['io','multiplayer'],'','#7c3aed','Battle • .io','https://minigiants.io/'],
-['Agar.io Classic','🔵',['io','multiplayer'],'Classic','#60a5fa','IO • Multiplayer','https://agar.io/']];
+];
 const officialIcons={'2048':'https://www.google.com/s2/favicons?domain=play2048.co&sz=256','Venge.io':'https://www.google.com/s2/favicons?domain=venge.io&sz=256','Taming.io':'https://www.google.com/s2/favicons?domain=taming.io&sz=256','Smash Karts':'https://www.google.com/s2/favicons?domain=smashkarts.io&sz=256','Shell Shockers':'https://www.google.com/s2/favicons?domain=shellshock.io&sz=256','Agar.io':'https://www.google.com/s2/favicons?domain=agar.io&sz=256','Slither.io':'https://www.google.com/s2/favicons?domain=slither.io&sz=256','Diep.io':'https://www.google.com/s2/favicons?domain=diep.io&sz=256','Krunker':'https://www.google.com/s2/favicons?domain=krunker.io&sz=256','Mope.io':'https://www.google.com/s2/favicons?domain=mope.io&sz=256','MooMoo.io':'https://www.google.com/s2/favicons?domain=moomoo.io&sz=256','Zombs.io':'https://www.google.com/s2/favicons?domain=zombs.io&sz=256','Narrow One':'https://www.google.com/s2/favicons?domain=narrow.one&sz=256','Minecraft Classic':'https://www.google.com/s2/favicons?domain=classic.minecraft.net&sz=256','1v1.LOL':'https://www.google.com/s2/favicons?domain=1v1.lol&sz=256','Drift Hunters':'https://www.google.com/s2/favicons?domain=drifthunters.io&sz=256','Zombs Royale':'https://www.google.com/s2/favicons?domain=zombsroyale.io&sz=256','Little Big Snake':'https://www.google.com/s2/favicons?domain=littlebigsnake.com&sz=256','EvoWorld.io':'https://www.google.com/s2/favicons?domain=evoworld.io&sz=256','FlyOrDie.io':'https://www.google.com/s2/favicons?domain=flyordie.io&sz=256','WormsZone.io':'https://www.google.com/s2/favicons?domain=worms.zone&sz=256','Paper.io':'https://www.google.com/s2/favicons?domain=paper-io.com&sz=256','Starve.io':'https://www.google.com/s2/favicons?domain=starve.io&sz=256','BrutalMania.io':'https://www.google.com/s2/favicons?domain=brutalmania.io&sz=256','Repuls.io':'https://www.google.com/s2/favicons?domain=repuls.io&sz=256','Vectaria.io':'https://www.google.com/s2/favicons?domain=vectaria.io&sz=256','Cryzen.io':'https://www.google.com/s2/favicons?domain=cryzen.io&sz=256','Deadshot.io':'https://www.google.com/s2/favicons?domain=deadshot.io&sz=256','WarBrokers.io':'https://www.google.com/s2/favicons?domain=warbrokers.io&sz=256','BuildRoyale.io':'https://www.google.com/s2/favicons?domain=buildroyale.io&sz=256','Survev.io':'https://www.google.com/s2/favicons?domain=survev.io&sz=256','Tanki Online':'https://www.google.com/s2/favicons?domain=tankionline.com&sz=256','Bloxd.io':'https://www.google.com/s2/favicons?domain=bloxd.io&sz=256','Flappy Bird':'https://www.google.com/s2/favicons?domain=flappybird.io&sz=256','Mini Royale: Nations':'https://www.google.com/s2/favicons?domain=miniroyale.io&sz=256','Pixel Gun 3D':'https://www.google.com/s2/favicons?domain=pixelgun3d.com&sz=256','Doomed.io':'https://www.google.com/s2/favicons?domain=doomed.io&sz=256','MiniGiants.io':'https://www.google.com/s2/favicons?domain=minigiants.io&sz=256','Brutal.io':'https://www.google.com/s2/favicons?domain=brutal.io&sz=256','Nend.io':'https://www.google.com/s2/favicons?domain=nend.io&sz=256','Gats.io':'https://www.google.com/s2/favicons?domain=gats.io&sz=256','Kirka.io':'https://www.google.com/s2/favicons?domain=kirka.io&sz=256'};
 const games=gameData.filter(x=>!x[6].includes('poki.com')).map(x=>({name:x[0],emoji:x[1],cat:x[2],tag:x[3],bg:x[4],meta:x[5],url:x[6],icon:officialIcons[x[0]]}));
 let filter='all', query='', currentUser=localStorage.getItem('playboxUser')||'';
@@ -440,37 +346,15 @@ async function openSocial(tab='friends'){
   await renderSocial();
 }
 let chatChannel=null;
-let chatTypingChannel=null;
-let chatFriendUserId='';
-let chatUserId='';
-let typingTimer=null;
-let typingActive=false;
-
-function setTyping(text){
-  const node=el('chatTyping');
-  if(node)node.textContent=text||'';
-}
-
-async function markChatMessagesRead(){
-  if(!chatUserId||!chatFriendUserId)return;
-  const {error}=await supabaseClient.from('messages')
-    .update({read_at:new Date().toISOString()})
-    .eq('sender_id',chatFriendUserId)
-    .eq('receiver_id',chatUserId)
-    .is('read_at',null);
-  if(error)console.error('Mark messages read error:',error);
-}
-
 async function subscribeToChat(){
-  if(chatChannel){await supabaseClient.removeChannel(chatChannel);chatChannel=null}
-  if(chatTypingChannel){await supabaseClient.removeChannel(chatTypingChannel);chatTypingChannel=null}
+  if(chatChannel){
+    await supabaseClient.removeChannel(chatChannel);
+    chatChannel=null;
+  }
   const user=await getSocialUser();
-  if(!user||!chatFriendUserId)return;
-
-  const pair=[user.id,chatFriendUserId].sort().join('-');
-
-  chatChannel=supabaseClient.channel('playbox-chat-'+pair)
-    .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},async payload=>{
+  if(!user||!chatFriend)return;
+  chatChannel=supabaseClient.channel('playbox-chat-'+user.id+'-'+Date.now())
+    .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},payload=>{
       const m=payload.new;
       if(!m)return;
       if((m.sender_id===user.id&&m.receiver_id===chatFriendUserId)||(m.receiver_id===user.id&&m.sender_id===chatFriendUserId)){
@@ -479,41 +363,17 @@ async function subscribeToChat(){
         const bubble=document.createElement('div');
         bubble.className='bubble '+(m.sender_id===user.id?'me':'');
         bubble.dataset.messageId=m.id;
-        bubble.innerHTML=`${socialEscape(m.body)}<small>${m.sender_id===user.id?'You':socialEscape(chatFriend)}</small>${m.sender_id===user.id?'<span class="message-status">Sent</span>':''}`;
+        bubble.innerHTML=`${socialEscape(m.body)}<small>${m.sender_id===user.id?'You':socialEscape(chatFriend)}</small>`;
         box.appendChild(bubble);
         box.scrollTop=box.scrollHeight;
-        if(m.receiver_id===user.id)await markChatMessagesRead();
       }
-    })
-    .on('postgres_changes',{event:'UPDATE',schema:'public',table:'messages'},payload=>{
-      const m=payload.new;
-      if(!m || m.sender_id!==user.id || m.receiver_id!==chatFriendUserId)return;
-      const bubble=el('chatMessages').querySelector(`[data-message-id="${m.id}"]`);
-      if(!bubble)return;
-      const status=bubble.querySelector('.message-status');
-      if(status)status.textContent=m.read_at?'Seen':'Sent';
     })
     .subscribe(status=>{
       if(status==='CHANNEL_ERROR')console.error('Chat realtime channel error');
     });
-
-  chatTypingChannel=supabaseClient.channel('playbox-typing-'+pair,{config:{broadcast:{self:false}}})
-    .on('broadcast',{event:'typing'},({payload})=>{
-      if(!payload || payload.userId===user.id)return;
-      setTyping(payload.typing?`${socialEscape(chatFriend)} is typing...`:'');
-    })
-    .subscribe(status=>{
-      if(status==='CHANNEL_ERROR')console.error('Typing realtime channel error');
-    });
 }
-
-async function broadcastTyping(isTyping){
-  if(!chatTypingChannel||!chatUserId)return;
-  try{
-    await chatTypingChannel.send({type:'broadcast',event:'typing',payload:{userId:chatUserId,typing:isTyping}});
-  }catch(err){console.error('Typing broadcast error:',err)}
-}
-
+let chatFriendUserId='';
+let chatUserId='';
 async function openChat(name){
   const f=await friendStatus(name);
   const user=await getSocialUser();
@@ -523,43 +383,30 @@ async function openChat(name){
   chatUserId=user.id;
   el('chatTitle').textContent=name;
   el('chatAvatar').innerHTML=f.avatar?`<img src="${socialEscape(f.avatar)}" alt="">`:'👤';
-  setTyping('');
   el('chatModal').classList.add('open');
   await renderChat();
   await subscribeToChat();
-  await markChatMessagesRead();
   setTimeout(()=>el('chatInput').focus(),50);
 }
-
 async function renderChat(){
   const user=await getSocialUser();
   const friend=await friendStatus(chatFriend);
   if(!user||!friend)return;
-  const q1=supabaseClient.from('messages').select('id,sender_id,receiver_id,body,created_at,read_at').eq('sender_id',user.id).eq('receiver_id',friend.userId).order('created_at',{ascending:true});
-  const q2=supabaseClient.from('messages').select('id,sender_id,receiver_id,body,created_at,read_at').eq('sender_id',friend.userId).eq('receiver_id',user.id).order('created_at',{ascending:true});
+  const q1=supabaseClient.from('messages').select('id,sender_id,receiver_id,body,created_at').eq('sender_id',user.id).eq('receiver_id',friend.userId).order('created_at',{ascending:true});
+  const q2=supabaseClient.from('messages').select('id,sender_id,receiver_id,body,created_at').eq('sender_id',friend.userId).eq('receiver_id',user.id).order('created_at',{ascending:true});
   const [{data:a,error:e1},{data:b,error:e2}]=await Promise.all([q1,q2]);
-  if(e1||e2){
-    console.error('Chat load error:',e1||e2);
-    el('chatMessages').innerHTML='<div style="text-align:center;color:var(--muted);padding:50px 10px">Chat is not ready yet. Run the Friends SQL setup first.</div>';
-    return;
-  }
+  if(e1||e2){console.error('Chat load error:',e1||e2);el('chatMessages').innerHTML='<div style="text-align:center;color:var(--muted);padding:50px 10px">Chat is not ready yet. Run the Friends SQL setup first.</div>';return}
   const msgs=[...(a||[]),...(b||[])].sort((x,y)=>new Date(x.created_at)-new Date(y.created_at));
-  let lastMine=-1;
-  msgs.forEach((m,i)=>{if(m.sender_id===user.id)lastMine=i});
-  el('chatMessages').innerHTML=msgs.length?msgs.map((m,i)=>`<div class="bubble ${m.sender_id===user.id?'me':''}" data-message-id="${m.id}">${socialEscape(m.body)}<small>${m.sender_id===user.id?'You':socialEscape(chatFriend)}</small>${m.sender_id===user.id&&i===lastMine?`<span class="message-status">${m.read_at?'Seen':'Sent'}</span>`:''}</div>`).join(''):'<div style="text-align:center;color:var(--muted);padding:50px 10px">No messages yet. Say hi 👋</div>';
+  el('chatMessages').innerHTML=msgs.length?msgs.map(m=>`<div class="bubble ${m.sender_id===user.id?'me':''}">${socialEscape(m.body)}<small>${m.sender_id===user.id?'You':socialEscape(chatFriend)}</small></div>`).join(''):'<div style="text-align:center;color:var(--muted);padding:50px 10px">No messages yet. Say hi 👋</div>';
   el('chatMessages').scrollTop=el('chatMessages').scrollHeight;
 }
-
 el('chatForm').onsubmit=async e=>{
   e.preventDefault();
   const input=el('chatInput');
   const text=input.value.trim();
   if(!text||!chatFriend||!chatUserId||!chatFriendUserId)return;
 
-  await broadcastTyping(false);
-  clearTimeout(typingTimer);
-  typingActive=false;
-
+  // Show the message immediately so chat never waits for Supabase.
   const messageId=crypto.randomUUID();
   const box=el('chatMessages');
   const empty=box.querySelector('div[style*="No messages yet"]');
@@ -567,11 +414,12 @@ el('chatForm').onsubmit=async e=>{
   const bubble=document.createElement('div');
   bubble.className='bubble me';
   bubble.dataset.messageId=messageId;
-  bubble.innerHTML=`${socialEscape(text)}<small>You</small><span class="message-status">Sent</span>`;
+  bubble.innerHTML=`${socialEscape(text)}<small>You</small>`;
   box.appendChild(bubble);
   box.scrollTop=box.scrollHeight;
   input.value='';
 
+  // Save in the background; realtime handles delivery without another full chat reload.
   const {error}=await supabaseClient.from('messages').insert({id:messageId,sender_id:chatUserId,receiver_id:chatFriendUserId,body:text});
   if(error){
     console.error('Message send error:',error);
@@ -580,43 +428,19 @@ el('chatForm').onsubmit=async e=>{
     alert('Could not send message.');
   }
 };
-
-el('chatInput').addEventListener('input',async ()=>{
-  if(!chatFriend||!chatUserId)return;
-  if(!typingActive){
-    typingActive=true;
-    await broadcastTyping(true);
-  }
-  clearTimeout(typingTimer);
-  typingTimer=setTimeout(async ()=>{
-    typingActive=false;
-    await broadcastTyping(false);
-  },1500);
-});
-
 document.querySelectorAll('.socialtab').forEach(b=>b.onclick=()=>openSocial(b.dataset.social));
 el('socialClose').onclick=()=>el('socialModal').classList.remove('open');
 el('socialModal').onclick=e=>{if(e.target===el('socialModal'))el('socialModal').classList.remove('open')};
 el('chatClose').onclick=async ()=>{
-  await broadcastTyping(false);
-  clearTimeout(typingTimer);
-  typingActive=false;
-  setTyping('');
   el('chatModal').classList.remove('open');
   if(chatChannel){await supabaseClient.removeChannel(chatChannel);chatChannel=null;}
-  if(chatTypingChannel){await supabaseClient.removeChannel(chatTypingChannel);chatTypingChannel=null;}
   chatFriend='';
   chatFriendUserId='';
 };
 el('chatModal').onclick=async e=>{
   if(e.target===el('chatModal')){
-    await broadcastTyping(false);
-    clearTimeout(typingTimer);
-    typingActive=false;
-    setTyping('');
     el('chatModal').classList.remove('open');
     if(chatChannel){await supabaseClient.removeChannel(chatChannel);chatChannel=null;}
-    if(chatTypingChannel){await supabaseClient.removeChannel(chatTypingChannel);chatTypingChannel=null;}
     chatFriend='';
     chatFriendUserId='';
     chatUserId='';
@@ -910,4 +734,4 @@ render();
 renderFavorites();
 updateNotifications();
 restoreSession();
-</script><div class="gameSubmitModal" id="gameSubmitModal"><div class="gameSubmitBox" role="dialog" aria-modal="true" aria-labelledby="gameSubmitTitle"><div class="gameSubmitIcon">🎮</div><h2 id="gameSubmitTitle">Game Submissions Coming Soon!</h2><p>We’re working on bringing game submissions to PLAYBOX.<br>Please be patient — you’ll be able to submit your game soon! ❤️</p><button type="button" class="gameSubmitClose" id="gameSubmitClose">Got it</button></div></div><footer style="margin-top:60px;padding:32px 20px;text-align:center;border-top:1px solid var(--border);color:var(--muted);background:var(--surface);"><div style="font-size:18px;font-weight:900;color:var(--text);margin-bottom:7px;">PLAYBOX</div><div style="font-size:13px;margin-bottom:6px;">A gaming platform by <strong style="color:var(--text);">PlayBox Interactive</strong></div><div style="font-size:13px;margin-bottom:10px;">Made with ❤️ by Mohamed</div><button type="button" id="submitGameBtn" style="border:1px solid var(--border);background:var(--surface2);color:var(--text);padding:10px 14px;border-radius:10px;font-weight:800;cursor:pointer;margin-bottom:10px;">🎮 Submit Your Game</button><div style="font-size:12px;">© 2026 PlayBox Interactive. All rights reserved.</div></footer></body></html>
+</script></body></html>
