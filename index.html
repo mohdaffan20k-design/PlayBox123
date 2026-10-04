@@ -210,10 +210,99 @@ function setFilter(f,btn){filter=f;query='';el('search').value='';document.query
 document.querySelectorAll('[data-filter]').forEach(b=>b.addEventListener('click',()=>setFilter(b.dataset.filter,b)));
 el('search').addEventListener('input',e=>{query=e.target.value.trim().toLowerCase();render();renderContinue()});
 function playTimeKey(){return 'playboxPlayTime_'+currentUser}
-function getPlayTimes(){return currentUser?JSON.parse(localStorage.getItem(playTimeKey())||'{}'):{}}
+function getPlayTimes(){return currentUser?JSON.parse(localStorage.getItem(playTimeKey())||'{}'):{}
+}
 function getPlayTime(name){return getPlayTimes()[name]||0}
-function trackGameTime(){if(!currentUser||!activeGame||!gameStartedAt)return;let times=getPlayTimes();times[activeGame]=(times[activeGame]||0)+Math.max(0,Math.floor((Date.now()-gameStartedAt)/1000));localStorage.setItem(playTimeKey(),JSON.stringify(times));gameStartedAt=Date.now()}
-function savePlayed(name){if(!currentUser)return;trackGameTime();let key='playboxPlayed_'+currentUser;let played=JSON.parse(localStorage.getItem(key)||'[]').filter(x=>x!==name);played.unshift(name);localStorage.setItem(key,JSON.stringify(played.slice(0,8)));renderContinue()}
+
+// Cloud progress: Continue Playing + per-game playtime are tied to the Supabase account,
+// so the same account keeps its progress on every device.
+let cloudProgressLoaded=false;
+let cloudProgressSaveTimer=null;
+function progressLocalState(){
+  return {
+    played: JSON.parse(localStorage.getItem('playboxPlayed_'+currentUser)||'[]'),
+    times: getPlayTimes()
+  };
+}
+async function getCloudUserId(){
+  const {data,error}=await supabaseClient.auth.getUser();
+  if(error||!data?.user)return null;
+  return data.user.id;
+}
+async function saveGameProgressCloud(name, seconds, lastPlayedAt){
+  if(!currentUser||!name)return;
+  const userId=await getCloudUserId();
+  if(!userId)return;
+  const {error}=await supabaseClient.from('playbox_game_progress').upsert({
+    user_id:userId,
+    game_name:name,
+    play_time_seconds:Math.max(0,Math.floor(Number(seconds)||0)),
+    last_played_at:lastPlayedAt||new Date().toISOString()
+  },{onConflict:'user_id,game_name'});
+  if(error)console.error('Cloud progress save error:',error);
+}
+async function saveAllProgressCloud(){
+  if(!currentUser)return;
+  const userId=await getCloudUserId();
+  if(!userId)return;
+  const state=progressLocalState();
+  const rows=state.played.map((name,i)=>({
+    user_id:userId,
+    game_name:name,
+    play_time_seconds:Math.max(0,Math.floor(Number(state.times[name])||0)),
+    last_played_at:new Date(Date.now()-i).toISOString()
+  }));
+  if(!rows.length)return;
+  const {error}=await supabaseClient.from('playbox_game_progress').upsert(rows,{onConflict:'user_id,game_name'});
+  if(error)console.error('Cloud progress sync error:',error);
+}
+async function loadCloudProgress(){
+  if(!currentUser)return;
+  const userId=await getCloudUserId();
+  if(!userId)return;
+  const {data,error}=await supabaseClient.from('playbox_game_progress').select('game_name,play_time_seconds,last_played_at').eq('user_id',userId).order('last_played_at',{ascending:false});
+  if(error){console.error('Cloud progress load error:',error);return}
+
+  const cloudRows=data||[];
+  const localPlayed=JSON.parse(localStorage.getItem('playboxPlayed_'+currentUser)||'[]');
+  const localTimes=getPlayTimes();
+  const cloudPlayed=cloudRows.map(r=>r.game_name).filter(n=>games.some(g=>g.name===n));
+  const mergedPlayed=[...cloudPlayed,...localPlayed.filter(n=>!cloudPlayed.includes(n))].slice(0,8);
+  const mergedTimes={...localTimes};
+  cloudRows.forEach(r=>{
+    const cloudTime=Math.max(0,Math.floor(Number(r.play_time_seconds)||0));
+    mergedTimes[r.game_name]=Math.max(Number(mergedTimes[r.game_name]||0),cloudTime);
+  });
+
+  localStorage.setItem('playboxPlayed_'+currentUser,JSON.stringify(mergedPlayed));
+  localStorage.setItem(playTimeKey(),JSON.stringify(mergedTimes));
+  cloudProgressLoaded=true;
+  await saveAllProgressCloud();
+  renderContinue();
+  updateNotifications();
+}
+function scheduleCloudProgressSave(){
+  clearTimeout(cloudProgressSaveTimer);
+  cloudProgressSaveTimer=setTimeout(()=>saveAllProgressCloud(),700);
+}
+function trackGameTime(){
+  if(!currentUser||!activeGame||!gameStartedAt)return;
+  let times=getPlayTimes();
+  times[activeGame]=(times[activeGame]||0)+Math.max(0,Math.floor((Date.now()-gameStartedAt)/1000));
+  localStorage.setItem(playTimeKey(),JSON.stringify(times));
+  saveGameProgressCloud(activeGame,times[activeGame],new Date().toISOString());
+  gameStartedAt=Date.now();
+}
+function savePlayed(name){
+  if(!currentUser)return;
+  trackGameTime();
+  let key='playboxPlayed_'+currentUser;
+  let played=JSON.parse(localStorage.getItem(key)||'[]').filter(x=>x!==name);
+  played.unshift(name);
+  localStorage.setItem(key,JSON.stringify(played.slice(0,8)));
+  saveGameProgressCloud(name,getPlayTime(name),new Date().toISOString());
+  renderContinue();
+}
  function renderContinue(){let section=el('continueSection');if(!currentUser||filter!=='all'||query){section.classList.remove('show');return}let played=JSON.parse(localStorage.getItem('playboxPlayed_'+currentUser)||'[]').map(n=>games.find(g=>g.name===n)).filter(Boolean);if(!played.length){section.classList.remove('show');return}section.classList.add('show');el('continueGames').innerHTML=played.map(card).join('');updateNotifications()}
 async function getSocialUser(){
   const {data,error}=await supabaseClient.auth.getUser();
@@ -507,6 +596,7 @@ function updateAuth(){
       presenceHeartbeat=null;
       await supabaseClient.auth.signOut();
       currentUser='';
+      cloudProgressLoaded=false;
       favoritesCache=[];
       localStorage.removeItem('playboxUser');
       updateAuth();
@@ -598,6 +688,7 @@ el('authForm').onsubmit = async e => {
         localStorage.setItem('playboxUserEmail',email);
         closeAuth();
         updateAuth();
+        await loadCloudProgress();
         renderContinue();
         loadFavorites();
         startPresenceHeartbeat();
@@ -621,6 +712,7 @@ el('authForm').onsubmit = async e => {
       localStorage.removeItem('playboxPendingUsername_'+email);
       closeAuth();
       updateAuth();
+      await loadCloudProgress();
       renderContinue();
       loadFavorites();
       startPresenceHeartbeat();
@@ -724,9 +816,9 @@ async function restoreSession(){
     currentUser=profile?.username||localStorage.getItem('playboxUser')||email.split('@')[0].slice(0,24);
     localStorage.setItem('playboxUserEmail',email);
     if(profile?.username)localStorage.setItem('playboxUser',profile.username);
-    updateAuth();renderContinue();loadFavorites();startPresenceHeartbeat();
+    updateAuth();await loadCloudProgress();renderContinue();loadFavorites();startPresenceHeartbeat();
   }else{
-    currentUser='';favoritesCache=[];if(presenceHeartbeat)clearInterval(presenceHeartbeat);presenceHeartbeat=null;updateAuth();renderContinue();
+    currentUser='';cloudProgressLoaded=false;favoritesCache=[];if(presenceHeartbeat)clearInterval(presenceHeartbeat);presenceHeartbeat=null;updateAuth();renderContinue();
   }
 }
 
