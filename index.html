@@ -22,7 +22,7 @@ header{height:76px;background:var(--surface);border-bottom:1px solid var(--borde
 </style>
 <style>.thumb img{width:auto;height:auto;max-width:100%;max-height:100%;object-fit:contain}</style>
 <style>.profile-wrap{position:relative}.profile-btn{display:flex!important;align-items:center;gap:9px}.avatar{width:30px;height:30px;border-radius:50%;object-fit:cover;background:var(--surface2);display:inline-flex;align-items:center;justify-content:center;font-size:14px}.profile-menu{position:absolute;right:0;top:48px;width:210px;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:7px;box-shadow:0 18px 50px #0005;display:none;z-index:20}.profile-menu.open{display:block}.profile-menu button{width:100%;text-align:left;border:0;background:transparent!important;color:var(--text)!important;padding:11px 12px;border-radius:9px;font-weight:750}.profile-menu button:hover{background:var(--surface2)!important}.settingsmodal{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;padding:20px;z-index:45}.settingsmodal.open{display:flex}.settingsbox{width:min(520px,100%);max-height:90vh;overflow:auto;background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:26px;box-shadow:0 25px 80px #0008}.settingshead{display:flex;align-items:center;gap:13px;margin-bottom:20px}.settingshead h2{margin:0}.settingshead p{margin:3px 0 0;color:var(--muted);font-size:13px}.profile-big{width:64px;height:64px;border-radius:50%;object-fit:cover;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:25px}.setting-row{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:15px 0;border-top:1px solid var(--border)}.setting-row strong{display:block}.setting-row small{display:block;color:var(--muted);margin-top:4px}.setting-row button{border:1px solid var(--border);background:var(--surface2);color:var(--text);border-radius:9px;padding:9px 12px;font-weight:800;cursor:pointer;white-space:nowrap}.danger{color:#ef4444!important;border-color:#ef444455!important}.settings-actions{display:flex;justify-content:flex-end;margin-top:18px}.settings-actions button{border:0;background:var(--surface2);color:var(--text);padding:10px 14px;border-radius:10px;font-weight:800;cursor:pointer}</style>
-<style>.socialmodal{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;padding:20px;z-index:44}.socialmodal.open{display:flex}.socialbox{width:min(850px,100%);height:min(680px,90vh);background:var(--surface);border:1px solid var(--border);border-radius:18px;overflow:hidden;display:flex;box-shadow:0 25px 80px #0008}.socialside{width:250px;background:var(--surface2);padding:18px;border-right:1px solid var(--border);overflow:auto}.socialside h2{margin:0 0 16px}.socialtab{width:100%;border:0;background:transparent;color:var(--muted);padding:11px 12px;text-align:left;border-radius:10px;font-weight:850;cursor:pointer;margin-bottom:5px}.socialtab.active,.socialtab:hover{background:var(--surface);color:var(--text)}.friendmini{display:flex;align-items:center;gap:9px;padding:9px;border-radius:10px;cursor:pointer}.friendmini:hover{background:var(--surface)}.dot{width:8px;height:8px;border-radius:50%;background:#facc15;margin-left:auto}.dot.playing{background:#22c55e}.statusline{display:flex;align-items:center;gap:6px}.statusdot{width:8px;height:8px;border-radius:50%;background:#facc15;display:inline-block}.statusdot.playing{background:#22c55e}.socialmain{flex:1;display:flex;flex-direction:column;min-width:0}.socialhead{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}.socialhead h2{margin:0}.socialcontent{padding:20px;overflow:auto;flex:1}.socialrow{display:flex;align-items:center;gap:12px;padding:13px;border:1px solid var(--border);border-radius:12px;margin-bottom:10px}.socialavatar{width:42px;height:42px;border-radius:50%;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-weight:900;overflow:hidden;flex:none}.socialavatar img{width:100%;height:100%;object-fit:cover}.socialname{font-weight:850}.socialstatus{font-size:12px;color:var(--muted);margin-top:3px}.socialactions{margin-left:auto;display:flex;gap:7px}.socialactions button,.socialform button{border:0;background:var(--accent);color:#fff;padding:9px 12px;border-radius:9px;font-weight:850;cursor:pointer}.socialactions .secondary{background:var(--surface2);color:var(--text);border:1px solid var(--border)}.socialform{display:flex;gap:8px;margin-bottom:16px}.socialform input{flex:1;border:1px solid var(--border);border-radius:10px;background:var(--surface2);color:var(--text);padding:11px;outline:0}.activity-card{padding:15px;border:1px solid var(--border);border-radius:12px;margin-bottom:10px}.activity-card strong{display:block}.activity-card small{display:block;color:var(--muted);margin-top:5px}.chatmodal{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;padding:20px;z-index:50}.chatmodal.open{display:flex}.chatbox{width:min(620px,100%);height:min(650px,88vh);background:var(--surface);border:1px solid var(--border);border-radius:18px;display:flex;flex-direction:column;overflow:hidden}.chathead{padding:15px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}.chathead strong{flex:1}.chatmessages{flex:1;overflow:auto;padding:18px;background:var(--bg)}.bubble{max-width:75%;padding:10px 13px;border-radius:14px;margin-bottom:9px;background:var(--surface2);line-height:1.35}.bubble.me{margin-left:auto;background:var(--accent);color:#fff}.bubble small{display:block;opacity:.65;font-size:10px;margin-top:4px}.chatinput{display:flex;gap:8px;padding:12px;border-top:1px solid var(--border)}.chatinput input{flex:1;border:1px solid var(--border);border-radius:10px;background:var(--surface2);color:var(--text);padding:11px;outline:0}.chatinput button{border:0;background:var(--accent);color:#fff;border-radius:10px;padding:0 17px;font-weight:900;cursor:pointer}</style>
+<style>.socialmodal{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;padding:20px;z-index:44}.socialmodal.open{display:flex}.socialbox{width:min(850px,100%);height:min(680px,90vh);background:var(--surface);border:1px solid var(--border);border-radius:18px;overflow:hidden;display:flex;box-shadow:0 25px 80px #0008}.socialside{width:250px;background:var(--surface2);padding:18px;border-right:1px solid var(--border);overflow:auto}.socialside h2{margin:0 0 16px}.socialtab{width:100%;border:0;background:transparent;color:var(--muted);padding:11px 12px;text-align:left;border-radius:10px;font-weight:850;cursor:pointer;margin-bottom:5px}.socialtab.active,.socialtab:hover{background:var(--surface);color:var(--text)}.friendmini{display:flex;align-items:center;gap:9px;padding:9px;border-radius:10px;cursor:pointer}.friendmini:hover{background:var(--surface)}.dot{width:8px;height:8px;border-radius:50%;background:#facc15;margin-left:auto}.dot.playing{background:#22c55e}.statusline{display:flex;align-items:center;gap:6px}.statusdot{width:8px;height:8px;border-radius:50%;background:#facc15;display:inline-block}.statusdot.playing{background:#22c55e}.socialmain{flex:1;display:flex;flex-direction:column;min-width:0}.socialhead{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}.socialhead h2{margin:0}.socialcontent{padding:20px;overflow:auto;flex:1}.socialrow{display:flex;align-items:center;gap:12px;padding:13px;border:1px solid var(--border);border-radius:12px;margin-bottom:10px}.socialavatar{width:42px;height:42px;border-radius:50%;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-weight:900;overflow:hidden;flex:none}.socialavatar img{width:100%;height:100%;object-fit:cover}.socialname{font-weight:850}.socialstatus{font-size:12px;color:var(--muted);margin-top:3px}.socialactions{margin-left:auto;display:flex;gap:7px}.socialactions button,.socialform button{border:0;background:var(--accent);color:#fff;padding:9px 12px;border-radius:9px;font-weight:850;cursor:pointer}.socialactions .secondary{background:var(--surface2);color:var(--text);border:1px solid var(--border)}.socialform{display:flex;gap:8px;margin-bottom:16px}.socialform input{flex:1;border:1px solid var(--border);border-radius:10px;background:var(--surface2);color:var(--text);padding:11px;outline:0}.activity-card{padding:15px;border:1px solid var(--border);border-radius:12px;margin-bottom:10px}.activity-card strong{display:block}.activity-card small{display:block;color:var(--muted);margin-top:5px}.chatmodal{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;padding:20px;z-index:50}.chatmodal.open{display:flex}.chatbox{width:min(620px,100%);height:min(650px,88vh);background:var(--surface);border:1px solid var(--border);border-radius:18px;display:flex;flex-direction:column;overflow:hidden}.chathead{padding:15px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}.chathead strong{flex:1}.chatmessages{flex:1;overflow:auto;padding:18px;background:var(--bg)}.chattyping{min-height:18px;padding:0 14px 4px;color:var(--muted);font-size:12px;font-style:italic}.chattyping:empty{display:none}.bubble{max-width:75%;padding:10px 13px;border-radius:14px;margin-bottom:9px;background:var(--surface2);line-height:1.35}.bubble.me{margin-left:auto;background:var(--accent);color:#fff}.bubble small{display:block;opacity:.65;font-size:10px;margin-top:4px}.message-status{display:block;text-align:right;opacity:.75;font-size:10px;margin-top:2px}.chatinput{display:flex;gap:8px;padding:12px;border-top:1px solid var(--border)}.chatinput input{flex:1;border:1px solid var(--border);border-radius:10px;background:var(--surface2);color:var(--text);padding:11px;outline:0}.chatinput button{border:0;background:var(--accent);color:#fff;border-radius:10px;padding:0 17px;font-weight:900;cursor:pointer}</style>
 
 <style>
 /* PLAYBOX V2 */
@@ -55,7 +55,7 @@ const supabaseClient = supabase.createClient(
 <div class="authmodal" id="authModal"><div class="authbox"><h2 id="authTitle">Log In</h2><p id="authSubtitle">Log in to continue playing and save your games.</p><form id="authForm"><label for="authUsername" id="authUsernameLabel" style="display:none">Username</label><input id="authUsername" type="text" placeholder="Choose a username" autocomplete="username" style="display:none"><label for="authEmail">Gmail</label><input id="authEmail" type="email" placeholder="you@gmail.com" autocomplete="email" required><label for="authPassword">Password</label><input id="authPassword" type="password" placeholder="Enter your password" autocomplete="current-password" required><div class="autherror" id="authError"></div><div class="authactions"><button type="button" class="authcancel" id="authCancel">Cancel</button><button type="submit" class="authsubmit" id="authSubmit">Log In</button></div></form></div></div>
 <div class="settingsmodal" id="settingsModal"><div class="settingsbox"><div class="settingshead"><div class="profile-big" id="profileBig">👤</div><div><h2>Profile & Settings</h2><p id="profileEmail"></p></div></div><div class="setting-row"><div><strong>Profile picture</strong><small>Choose a picture from your device.</small></div><button id="changePic">Change</button><input id="picInput" type="file" accept="image/*" hidden></div><div class="setting-row"><div><strong>Change password</strong><small>Update your current password.</small></div><button id="changePassword">Change</button></div><div class="setting-row"><div><strong>Reset password</strong><small>Set a new password for this account.</small></div><button id="resetPassword">Reset</button></div><div class="setting-row"><div><strong>Change email</strong><small>Move your account to another Gmail address.</small></div><button id="changeEmail">Change</button></div><div class="setting-row"><div><strong>Delete account</strong><small>This removes your saved account and played-game history.</small></div><button class="danger" id="deleteAccount">Delete</button></div><div class="settings-actions"><button id="settingsClose">Close</button></div></div></div>
 <div class="profilemodal" id="profileModal"><div class="profilebox"><div class="profilehero"><div class="profile-big" id="publicProfileAvatar">👤</div><div style="flex:1"><h2 id="publicProfileName">Player</h2><p id="publicProfileEmail"></p></div><button class="close" id="profileClose">Close</button></div><div class="quickstats"><div class="stat"><strong id="statPlayed">0</strong><small>Games played</small></div><div class="stat"><strong id="statTime">0m</strong><small>Total playtime</small></div><div class="stat"><strong id="statFavs">0</strong><small>Favorites</small></div><div class="stat"><strong id="statAch">0</strong><small>Achievements</small></div></div><div class="section-title"><h2>🏆 Achievements</h2></div><div class="profilegrid" id="achievementsGrid"></div></div></div><div class="socialmodal" id="socialModal"><div class="socialbox"><aside class="socialside"><h2>👤 Social</h2><button class="socialtab active" data-social="friends">Friends</button><button class="socialtab" data-social="requests">Requests</button><button class="socialtab" data-social="add">Add Friend</button><button class="socialtab" data-social="activity">Join / Activity</button><div id="friendMiniList" style="margin-top:18px"></div></aside><section class="socialmain"><div class="socialhead"><h2 id="socialTitle">Friends</h2><button class="close" id="socialClose">Close</button></div><div class="socialcontent" id="socialContent"></div></section></div></div>
-<div class="chatmodal" id="chatModal"><div class="chatbox"><div class="chathead"><div class="socialavatar" id="chatAvatar">👤</div><strong id="chatTitle">Chat</strong><button class="close" id="chatClose">Close</button></div><div class="chatmessages" id="chatMessages"></div><form class="chatinput" id="chatForm"><input id="chatInput" placeholder="Type a message..." autocomplete="off"><button>Send</button></form></div></div>
+<div class="chatmodal" id="chatModal"><div class="chatbox"><div class="chathead"><div class="socialavatar" id="chatAvatar">👤</div><strong id="chatTitle">Chat</strong><button class="close" id="chatClose">Close</button></div><div class="chatmessages" id="chatMessages"></div><div class="chattyping" id="chatTyping"></div><form class="chatinput" id="chatForm"><input id="chatInput" placeholder="Type a message..." autocomplete="off"><button>Send</button></form></div></div>
 <script>
 const gameData=[
 ['Venge.io','🔫',['action','io','multiplayer'],'Popular','#ef6b5f','FPS • .io • Multiplayer','https://venge.io/'],
@@ -438,15 +438,37 @@ async function openSocial(tab='friends'){
   await renderSocial();
 }
 let chatChannel=null;
+let chatTypingChannel=null;
+let chatFriendUserId='';
+let chatUserId='';
+let typingTimer=null;
+let typingActive=false;
+
+function setTyping(text){
+  const node=el('chatTyping');
+  if(node)node.textContent=text||'';
+}
+
+async function markChatMessagesRead(){
+  if(!chatUserId||!chatFriendUserId)return;
+  const {error}=await supabaseClient.from('messages')
+    .update({read_at:new Date().toISOString()})
+    .eq('sender_id',chatFriendUserId)
+    .eq('receiver_id',chatUserId)
+    .is('read_at',null);
+  if(error)console.error('Mark messages read error:',error);
+}
+
 async function subscribeToChat(){
-  if(chatChannel){
-    await supabaseClient.removeChannel(chatChannel);
-    chatChannel=null;
-  }
+  if(chatChannel){await supabaseClient.removeChannel(chatChannel);chatChannel=null}
+  if(chatTypingChannel){await supabaseClient.removeChannel(chatTypingChannel);chatTypingChannel=null}
   const user=await getSocialUser();
-  if(!user||!chatFriend)return;
-  chatChannel=supabaseClient.channel('playbox-chat-'+user.id+'-'+Date.now())
-    .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},payload=>{
+  if(!user||!chatFriendUserId)return;
+
+  const pair=[user.id,chatFriendUserId].sort().join('-');
+
+  chatChannel=supabaseClient.channel('playbox-chat-'+pair)
+    .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},async payload=>{
       const m=payload.new;
       if(!m)return;
       if((m.sender_id===user.id&&m.receiver_id===chatFriendUserId)||(m.receiver_id===user.id&&m.sender_id===chatFriendUserId)){
@@ -455,17 +477,41 @@ async function subscribeToChat(){
         const bubble=document.createElement('div');
         bubble.className='bubble '+(m.sender_id===user.id?'me':'');
         bubble.dataset.messageId=m.id;
-        bubble.innerHTML=`${socialEscape(m.body)}<small>${m.sender_id===user.id?'You':socialEscape(chatFriend)}</small>`;
+        bubble.innerHTML=`${socialEscape(m.body)}<small>${m.sender_id===user.id?'You':socialEscape(chatFriend)}</small>${m.sender_id===user.id?'<span class="message-status">Sent</span>':''}`;
         box.appendChild(bubble);
         box.scrollTop=box.scrollHeight;
+        if(m.receiver_id===user.id)await markChatMessagesRead();
       }
+    })
+    .on('postgres_changes',{event:'UPDATE',schema:'public',table:'messages'},payload=>{
+      const m=payload.new;
+      if(!m || m.sender_id!==user.id || m.receiver_id!==chatFriendUserId)return;
+      const bubble=el('chatMessages').querySelector(`[data-message-id="${m.id}"]`);
+      if(!bubble)return;
+      const status=bubble.querySelector('.message-status');
+      if(status)status.textContent=m.read_at?'Seen':'Sent';
     })
     .subscribe(status=>{
       if(status==='CHANNEL_ERROR')console.error('Chat realtime channel error');
     });
+
+  chatTypingChannel=supabaseClient.channel('playbox-typing-'+pair,{config:{broadcast:{self:false}}})
+    .on('broadcast',{event:'typing'},({payload})=>{
+      if(!payload || payload.userId===user.id)return;
+      setTyping(payload.typing?`${socialEscape(chatFriend)} is typing...`:'');
+    })
+    .subscribe(status=>{
+      if(status==='CHANNEL_ERROR')console.error('Typing realtime channel error');
+    });
 }
-let chatFriendUserId='';
-let chatUserId='';
+
+async function broadcastTyping(isTyping){
+  if(!chatTypingChannel||!chatUserId)return;
+  try{
+    await chatTypingChannel.send({type:'broadcast',event:'typing',payload:{userId:chatUserId,typing:isTyping}});
+  }catch(err){console.error('Typing broadcast error:',err)}
+}
+
 async function openChat(name){
   const f=await friendStatus(name);
   const user=await getSocialUser();
@@ -475,30 +521,43 @@ async function openChat(name){
   chatUserId=user.id;
   el('chatTitle').textContent=name;
   el('chatAvatar').innerHTML=f.avatar?`<img src="${socialEscape(f.avatar)}" alt="">`:'👤';
+  setTyping('');
   el('chatModal').classList.add('open');
   await renderChat();
   await subscribeToChat();
+  await markChatMessagesRead();
   setTimeout(()=>el('chatInput').focus(),50);
 }
+
 async function renderChat(){
   const user=await getSocialUser();
   const friend=await friendStatus(chatFriend);
   if(!user||!friend)return;
-  const q1=supabaseClient.from('messages').select('id,sender_id,receiver_id,body,created_at').eq('sender_id',user.id).eq('receiver_id',friend.userId).order('created_at',{ascending:true});
-  const q2=supabaseClient.from('messages').select('id,sender_id,receiver_id,body,created_at').eq('sender_id',friend.userId).eq('receiver_id',user.id).order('created_at',{ascending:true});
+  const q1=supabaseClient.from('messages').select('id,sender_id,receiver_id,body,created_at,read_at').eq('sender_id',user.id).eq('receiver_id',friend.userId).order('created_at',{ascending:true});
+  const q2=supabaseClient.from('messages').select('id,sender_id,receiver_id,body,created_at,read_at').eq('sender_id',friend.userId).eq('receiver_id',user.id).order('created_at',{ascending:true});
   const [{data:a,error:e1},{data:b,error:e2}]=await Promise.all([q1,q2]);
-  if(e1||e2){console.error('Chat load error:',e1||e2);el('chatMessages').innerHTML='<div style="text-align:center;color:var(--muted);padding:50px 10px">Chat is not ready yet. Run the Friends SQL setup first.</div>';return}
+  if(e1||e2){
+    console.error('Chat load error:',e1||e2);
+    el('chatMessages').innerHTML='<div style="text-align:center;color:var(--muted);padding:50px 10px">Chat is not ready yet. Run the Friends SQL setup first.</div>';
+    return;
+  }
   const msgs=[...(a||[]),...(b||[])].sort((x,y)=>new Date(x.created_at)-new Date(y.created_at));
-  el('chatMessages').innerHTML=msgs.length?msgs.map(m=>`<div class="bubble ${m.sender_id===user.id?'me':''}">${socialEscape(m.body)}<small>${m.sender_id===user.id?'You':socialEscape(chatFriend)}</small></div>`).join(''):'<div style="text-align:center;color:var(--muted);padding:50px 10px">No messages yet. Say hi 👋</div>';
+  let lastMine=-1;
+  msgs.forEach((m,i)=>{if(m.sender_id===user.id)lastMine=i});
+  el('chatMessages').innerHTML=msgs.length?msgs.map((m,i)=>`<div class="bubble ${m.sender_id===user.id?'me':''}" data-message-id="${m.id}">${socialEscape(m.body)}<small>${m.sender_id===user.id?'You':socialEscape(chatFriend)}</small>${m.sender_id===user.id&&i===lastMine?`<span class="message-status">${m.read_at?'Seen':'Sent'}</span>`:''}</div>`).join(''):'<div style="text-align:center;color:var(--muted);padding:50px 10px">No messages yet. Say hi 👋</div>';
   el('chatMessages').scrollTop=el('chatMessages').scrollHeight;
 }
+
 el('chatForm').onsubmit=async e=>{
   e.preventDefault();
   const input=el('chatInput');
   const text=input.value.trim();
   if(!text||!chatFriend||!chatUserId||!chatFriendUserId)return;
 
-  // Show the message immediately so chat never waits for Supabase.
+  await broadcastTyping(false);
+  clearTimeout(typingTimer);
+  typingActive=false;
+
   const messageId=crypto.randomUUID();
   const box=el('chatMessages');
   const empty=box.querySelector('div[style*="No messages yet"]');
@@ -506,12 +565,11 @@ el('chatForm').onsubmit=async e=>{
   const bubble=document.createElement('div');
   bubble.className='bubble me';
   bubble.dataset.messageId=messageId;
-  bubble.innerHTML=`${socialEscape(text)}<small>You</small>`;
+  bubble.innerHTML=`${socialEscape(text)}<small>You</small><span class="message-status">Sent</span>`;
   box.appendChild(bubble);
   box.scrollTop=box.scrollHeight;
   input.value='';
 
-  // Save in the background; realtime handles delivery without another full chat reload.
   const {error}=await supabaseClient.from('messages').insert({id:messageId,sender_id:chatUserId,receiver_id:chatFriendUserId,body:text});
   if(error){
     console.error('Message send error:',error);
@@ -520,19 +578,43 @@ el('chatForm').onsubmit=async e=>{
     alert('Could not send message.');
   }
 };
+
+el('chatInput').addEventListener('input',async ()=>{
+  if(!chatFriend||!chatUserId)return;
+  if(!typingActive){
+    typingActive=true;
+    await broadcastTyping(true);
+  }
+  clearTimeout(typingTimer);
+  typingTimer=setTimeout(async ()=>{
+    typingActive=false;
+    await broadcastTyping(false);
+  },1500);
+});
+
 document.querySelectorAll('.socialtab').forEach(b=>b.onclick=()=>openSocial(b.dataset.social));
 el('socialClose').onclick=()=>el('socialModal').classList.remove('open');
 el('socialModal').onclick=e=>{if(e.target===el('socialModal'))el('socialModal').classList.remove('open')};
 el('chatClose').onclick=async ()=>{
+  await broadcastTyping(false);
+  clearTimeout(typingTimer);
+  typingActive=false;
+  setTyping('');
   el('chatModal').classList.remove('open');
   if(chatChannel){await supabaseClient.removeChannel(chatChannel);chatChannel=null;}
+  if(chatTypingChannel){await supabaseClient.removeChannel(chatTypingChannel);chatTypingChannel=null;}
   chatFriend='';
   chatFriendUserId='';
 };
 el('chatModal').onclick=async e=>{
   if(e.target===el('chatModal')){
+    await broadcastTyping(false);
+    clearTimeout(typingTimer);
+    typingActive=false;
+    setTyping('');
     el('chatModal').classList.remove('open');
     if(chatChannel){await supabaseClient.removeChannel(chatChannel);chatChannel=null;}
+    if(chatTypingChannel){await supabaseClient.removeChannel(chatTypingChannel);chatTypingChannel=null;}
     chatFriend='';
     chatFriendUserId='';
     chatUserId='';
